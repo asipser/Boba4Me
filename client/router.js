@@ -10,6 +10,12 @@ FlowRouter.route('/host', {
   }
 });
 
+FlowRouter.route('/join', {
+  action: function() {
+    BlazeLayout.render("mainLayout", {content: "join"});
+  }
+});
+
 FlowRouter.route('/:id', {
   action: function() {
     BlazeLayout.render("mainLayout", {content: "order"});
