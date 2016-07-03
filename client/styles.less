@@ -49,7 +49,15 @@
 	src: url('/fonts/geomanist-ultra-webfont.ttf') format('truetype');
 }
 
-body {
-	background-color: @cl-lighterblue;
-	font-family: geomanist-black;
+@import "{}/client/stylesheets/home.import.less";
+
+html, body {
+	background-color: @cl-milktea;
+	font-family: geomanist-regular;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }
+
