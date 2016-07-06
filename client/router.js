@@ -14,7 +14,11 @@ Router.route('/',function(){
 
 
 Router.route('/newHost', function(){
-    this.render("newHost");
+  this.render("newHost");
+});
+
+Router.route('/join', function(){
+  this.render("join");
 });
 
 Router.route('/host',{
@@ -32,8 +36,6 @@ Router.route('/host',{
     });
   }
 });
-
-
 
 Router.route('/:_id',{
   loadingTemplate: 'loading',
@@ -85,7 +87,7 @@ Template.order.events({
   },
 });
 
-Template.home.events({
+Template.join.events({
   'submit .join-room'(event) {
     event.preventDefault();
     const target = event.target;
