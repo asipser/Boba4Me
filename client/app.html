@@ -1,35 +1,56 @@
 <template name="mainLayout">
-  <header><h1>Kadira Blog</h1></header>
   <main>
-    {{>Template.dynamic template=content}}
+    {{> yield}}
   </main>
-  <footer>We love Meteor</footer>
 </template>
 
 <template name="home">
+    <a href="/newHost">Create new room.</a> <br/>
+    <a href="/host">View host page.</a> <br/>
+    <form class="join-room">
+      <input type="text" name="text" placeholder="enter room #" />
+      <button class = "submit-button" type = "submit"> Submit.</button>
+    </form>
+
+
   <p>This is the home page of our blog</p>
-  <p>
-    <a href="/hello-world">See Hello World Post</a>
-  </p>
 </template>
 
 <template name="newHost">
   <p>
     <a href="/">Back</a> <br/>
-    This is the new host screen
+    <h1>This is the new host screen</h1>
+    <button class = "new-room">Generate Room?</button> 
   </p>
 </template>
 
 <template name="host">
-  <p>
-    <a href="/">Back</a> <br/>
-    This is the host
-  </p>
+    <a href="/">Home</a> <br/>
+    <h1> Room number {{number}} </h1> 
+    <ul>
+      {{#each orders}}
+        {{> order_entry}}
+      {{/each}}
+    </ul>
+  
 </template>
 
 <template name="order">
-  <p>
     <a href="/">Back</a> <br/>
+      <form class="new-order">
+        <input type="text" name="text" placeholder="Type to add new orders" />
+        <button class = "submit-order" type = "submit"> Submit.</button>
+      </form>
+  <p>
     This is the order screen
   </p>
+</template>
+
+<template name="loading">
+<p> loading... </p>
+
+</template>
+
+<template name="order_entry">
+  <li>{{text}}</li>
 </template>
