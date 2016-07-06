@@ -1,5 +1,5 @@
 <template name="mainLayout">
   <main>
-    {{>Template.dynamic template=content}}
+    {{> yield}} <!-- yield is where the templates are put into! Dynamic templating!-->
   </main>
 </template>

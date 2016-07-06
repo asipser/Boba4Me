@@ -1,6 +1,13 @@
 <template name="host">
-  <p>
-    <a href="/">Back</a> <br/>
-    This is the host
-  </p>
+    <a href="/">Home</a> <br/>
+    <h1> Room number {{number}} </h1> 
+    <ul>
+      {{#each orders}}
+        {{> order_entry}}
+      {{/each}}
+    </ul>
+</template>
+
+<template name="order_entry">
+  <li>{{text}}</li>
 </template>
