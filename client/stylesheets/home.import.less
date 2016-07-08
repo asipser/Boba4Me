@@ -22,28 +22,41 @@ div.home.circle {
 		margin-bottom: 20px;
 	}
 
-	a {
-		display: block;
+	.join-room {
+		width: calc(~"60% - 84px");
+	}
+
+	.redir-btn, .join-room {
 		padding: 40px;
-		color: white;
+		font-size: 200%;
 		border: 2px solid white;
 		border-radius: 6px;
-		width: 60%;
 		margin-left: auto;
 		margin-right: auto;
 		margin-bottom: 40px;
-		text-decoration: none;
-		font-size: 200%;
 		font-family: geomanist-extralight;
 	}
 
-	a:hover {
-		background-color: darken(@cl-tapioca, 10%);
+	.redir-btn {
+		display: block;
+		color: white;
+		background-color: rgba(0,0,0,0);
+		width: 60%;
+		text-decoration: none;
 	}
 
-	a:active {
+	.redir-btn:hover {
+		background-color: darken(@cl-tapioca, 10%);
+		cursor: pointer;
+	}
+
+	.redir-btn:active {
 		background-color: darken(@cl-tapioca, 15%);
 		color: @cl-tapioca;
+	}
+
+	.join-room.flipInY {
+		position: absolute;
 	}
 }
 
@@ -59,7 +72,11 @@ div.home.circle {
 			font-size: 15vw;
 		}
 
-		a {
+		.join-room {
+			width: calc(60% - (10vw + 4px) );
+		}
+
+		.redir-btn, .join-room {
 			font-size: 3vw;
 			padding: 5vw;
 			margin-bottom: 5vw;
