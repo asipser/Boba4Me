@@ -2,6 +2,36 @@
   <p>
     <a href="/">Back</a> <br/>
     <h1>This is the new host screen</h1>
+    <form class="create-room-form">
+    	<div>
+    	<label for="where">Ordering From:</label>
+    	<select autofocus required name="where" id="where">
+    		<option value="kungfutea" selected>Kung Fu Tea</option>
+    		<option value="ricebowl">Rice Bowl</option>
+    	</select>
+    	</div>
+
+    	<div>
+    	<label for="when">Close orders in:</label>
+    	<span id="when">
+    		<input type="number" id="hours" placeholder="hours" name="hours" value="0" required>
+    		<label for="hours">Hours</label>
+    		<input type="number" id="minutes" placeholder="minutes" name="minutes" value="15" required>
+    		<label for="minutes">Minutes</label>
+    	</span>
+    	</div>
+
+    	<div>
+    	<label for="maxOrders">Max Orders:</label>
+    	<input type="number" id="maxOrders" name="maxOrders" value="15" placeholder="max orders">
+    	</div>
+
+    	<div>
+    	<label for="secretHost">Secret Word for Host Page:</label>
+    	<input type="password" id="secretHost" name="secretHost" placeholder="secret host word">
+    	<input type="password" id="secretHost2" name="secretHost2" placeholder="confirm secret host word">
+    	</div>
+    </form>
     <button class = "new-room">Generate Room?</button> 
   </p>
 </template>
