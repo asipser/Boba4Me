@@ -21,17 +21,20 @@ Router.route('/join', function(){
   this.render("join");
 });
 
-Router.route('/host',{
+Router.route('/host/:_id',{
   loadingTemplate: 'loading',
   waitOn: function () {
     // return one handle, a function, or an array
     return Meteor.subscribe('orders');
   },
   action: function () {
+    var params = this.params; // { _id: "5" }
+    room_id = params._id;
+    room_id = parseInt(room_id);
     this.render('host', {
         data: function () {
-          return {number:Session.get("roomId"),
-          orders: Orders.find({"room":Session.get("roomId")}).fetch()[0].orders}
+          return {number:room_id,
+          orders: Orders.find({"room":room_id}).fetch()[0].orders}
         }
     });
   }
@@ -69,7 +72,7 @@ Template.newHost.events({
       orders:new Array(),
       createdAt: new Date(), // current time, needed to see room length
     });
-      Router.go('/host');
+      Router.go('/host/'+id);
   },
 });
 
@@ -77,11 +80,12 @@ Template.order.events({
   'submit .new-order'(event) {
     event.preventDefault();
     const target = event.target;
-    const text = target.text.value;
+    const text = target.text.value; // gets order
+    const price = target.price.value; // gets price (later wont be an input but will be calculated by selected options)
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);
     console.log(room_id);
-    orders_array.push({text:text});
+    orders_array.push({text:text, price:parseInt(price)});
     console.log(orders_array);
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
   },
