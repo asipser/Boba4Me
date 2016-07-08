@@ -12,6 +12,7 @@ caching-compiler@1.0.5_1
 caching-html-compiler@1.0.6
 callback-hook@1.0.9
 check@1.2.3
+coffeescript@1.1.2_1
 ddp@1.2.5
 ddp-client@1.2.8_1
 ddp-common@1.2.6
@@ -77,3 +78,4 @@ underscore@1.0.9
 url@1.0.10
 webapp@1.2.9_1
 webapp-hashing@1.0.9
+webtempest:animate@0.1.9

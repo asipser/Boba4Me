@@ -2,8 +2,17 @@
   <div class="home circle">
 	  <h1>boba4.me</h1>
 	  <p>
-	  	<a href="/newHost">Create a new Room</a>
-	    <a href="/join">Join a Room</a>
+	  	<button type="button" class="redir-btn new-host-link" href="/newHost">Create a new Room</button>
+	  	{{#transition out="flipOutY"}}
+		  	{{#if joining}}
+				  	<form class="join-room">
+			 			<input type="text" name="text" class="join-text" placeholder="enter room #" />
+			    		<button class="submit-button" type = "submit"> Submit.</button>
+			  		</form>
+	  		{{else}} 
+		    		<button type="button" class="redir-btn join-link" href="/join">Join a Room</button>
+		    {{/if}}
+	    {{/transition}}
 	  </p>
   </div>
 </template>

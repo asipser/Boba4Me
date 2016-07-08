@@ -9,16 +9,12 @@ Router.configure({
 });
 
 Router.route('/',function(){
+  Session.set("joining", false);
   this.render("home");
 });
 
-
 Router.route('/newHost', function(){
   this.render("newHost");
-});
-
-Router.route('/join', function(){
-  this.render("join");
 });
 
 Router.route('/host/:_id',{
@@ -91,11 +87,27 @@ Template.order.events({
   },
 });
 
-Template.join.events({
+Template.home.events({
+  'click .new-host-link'(event) {
+    event.preventDefault();
+    Router.go('/newHost');
+  },
+
+  'click .join-link'(event) {
+    event.preventDefault();
+    Session.set("joining", true);
+  },
+
   'submit .join-room'(event) {
     event.preventDefault();
     const target = event.target;
     const text = target.text.value;
     Router.go('/'+text);
-  },
+  }
 });
+
+Template.home.helpers({
+  joining() {
+    return Session.get("joining");
+  }
+})
