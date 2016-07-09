@@ -13,8 +13,15 @@ Router.route('/',function(){
   this.render("home");
 });
 
-Router.route('/newHost', function(){
-  this.render("newHost");
+Router.route('/newHost',{
+  loadingTemplate: 'loading',
+  waitOn: function () {
+    // return one handle, a function, or an array
+    return Meteor.subscribe('orders');
+  },
+  action: function () {
+    this.render("newHost");
+  }
 });
 
 Router.route('/host/:_id',{
@@ -56,21 +63,38 @@ Router.route('/:_id',{
 
 });
 
-Template.newHost.events({
-  'click .new-room'(event) {
-    // This is where one could add additional room settings.
-    event.preventDefault();
-    var id = Math.floor(Math.random()*10000);
-    Session.set('roomId', id);
-    console.log("Generated room with id " + id);
-    Orders.insert({
-      room:id,
-      orders:new Array(),
-      createdAt: new Date(), // current time, needed to see room length
-    });
-      Router.go('/host/'+id);
+Template.newHost.events({ // need to stop enter from submitting form probably?
+  'submit .create-room-form'(event) {
+      event.preventDefault();
+      const target = event.target;
+      const where = target.where.value; // gets place ordering from
+      const endTimeHours = parseInt(target.hours.value);
+      const endTimeMinutes = parseInt(target.minutes.value);
+      const maxOrders = parseInt(target.maxOrders.value); // gets max # of orders
+      const secretWord = target.secretHost.value;
+      var startTime = new Date();
+      var endTime = new Date(startTime.getTime() + (endTimeMinutes+(endTimeHours*60))*60000); // dates calculated by milliseconds thus mutliply by 60000
+      //console.log("startTime " + startTime.toTimeString() + " endTime: " + endTime.toTimeString());
+      var id = Math.floor(Math.random()*10000);
+      while(Orders.find({"room":id}).count() > 0){ // check to make sure duplicate room not created!
+        id = Math.floor(Math.random()*10000);
+      }
+      Session.set('roomId', id);
+      console.log("Generated room with id " + id);
+      Orders.insert({
+        room:id,
+        orders:new Array(),
+        createdAt: startTime, // current time, needed to see room length
+        endTime: endTime, // end date time!,
+        place: where, // where people choose to eat,
+        maxOrders:maxOrders,
+        secretWord:secretWord
+      });
+        Router.go('/host/'+id);
   },
 });
+
+
 
 Template.order.events({
   'submit .new-order'(event) {
