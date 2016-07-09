@@ -24,6 +24,44 @@ div.home.circle {
 
 	.join-room {
 		width: calc(~"60% - 84px");
+		background-color: white;
+
+		.join-text {
+			position: absolute;
+			top: 0;
+			left: 0;
+			padding: 40px;
+			font-size: 100%;
+			width: 30%;
+			font-family: geomanist-extralight;
+			font-weight: 700;
+			border: 0;
+			letter-spacing: 15pt;
+			color: @cl-tapioca;
+		}
+		.submit-button {
+			position: absolute;
+			top: 6%;
+			right: 8px;
+			width: calc(~"70% - 84px");
+			height: 88%;
+			font-family: geomanist-bold;
+			font-size: 100%;
+			letter-spacing: 3pt;
+			background-color: @cl-blue;
+			color: @cl-tapioca;
+			border-radius: 6pt;
+			border: 0;
+			}
+
+		.submit-button:hover {
+			cursor: pointer;
+			color: @cl-lighterblue;
+		}
+
+		.submit-button:active {
+			background-color: @cl-lighterblue;
+		}
 	}
 
 	.redir-btn, .join-room {
@@ -35,6 +73,7 @@ div.home.circle {
 		margin-right: auto;
 		margin-bottom: 40px;
 		font-family: geomanist-extralight;
+		position: relative;
 	}
 
 	.redir-btn {
@@ -74,6 +113,13 @@ div.home.circle {
 
 		.join-room {
 			width: calc(60% - (10vw + 4px) );
+			.join-text {
+				padding: 5vw;
+				font-size: 3vw;
+			}
+			.submit-button {
+				width: calc(~"70% - 9vw");
+			}
 		}
 
 		.redir-btn, .join-room {
@@ -82,4 +128,9 @@ div.home.circle {
 			margin-bottom: 5vw;
 		}
 	}	
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
