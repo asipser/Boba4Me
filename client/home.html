@@ -3,7 +3,7 @@
 	  <h1>boba4.me</h1>
 	  <p>
 	  	<button type="button" class="redir-btn new-host-link" href="/newHost">Create a new Room</button>
-	  	{{#transition out="flipOutY"}}
+			{{#transition out="flipOutX:500" in="flipInX:500"}}
 		  	{{#if joining}}
 				  	<form class="join-room">
 			 			<input type="text" name="text" class="join-text" placeholder="enter room #" />
