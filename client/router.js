@@ -49,8 +49,19 @@ Router.route('/:_id',{
     // return one handle, a function, or an array
     return Meteor.subscribe('orders');
   },
+  onBeforeAction: function () { // checks if order has run out of time (if it does it immediately ports to postUserOrder screen!)
+    var params = this.params; 
+    target_id = parseInt(params._id);
+    if(Orders.find({"room":target_id}).fetch()[0].completed){
+      Router.go("/postUserOrder/" + target_id);
+    }
+    else{
+      this.next();
+    }
+
+  },
   action: function () {
-    var params = this.params; // { _id: "5" }
+    var params = this.params;
     target_id = params._id;
     if(Orders.find({"room":parseInt(target_id)}).count() > 0){
       Session.set('roomId', parseInt(target_id));
@@ -96,7 +107,9 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
         maxOrders:maxOrders,
         delivery:0, // needs to be an integer
         tip:0, // 
-        secretWord:secretWord
+        secretWord:secretWord,
+        completed:false,
+        completedTime:undefined
       });
         Router.go('/host/'+id);
   },
@@ -174,10 +187,10 @@ Router.route('postUserOrder/:_id',{
     var order = Orders.find({"room":parseInt(target_id)}).fetch()[0];
     //Session.set("t",getTimeRemaining(order.endTime));
     timeinterval = setInterval(function () {
-      var t = getTimeRemaining(order.endTime);
+      var t = getTimeRemaining(Orders,order.endTime);
       Session.set("t", t);
     }, 1000);
-    Session.set("t",getTimeRemaining(order.endTime));
+    Session.set("t",getTimeRemaining(Orders,order.endTime));
     this.render('postUserOrder', {
         data: function (){
           return {minutes:Session.get("t").minutes,
@@ -188,7 +201,7 @@ Router.route('postUserOrder/:_id',{
   }
 });
 
-function getTimeRemaining(endtime){
+function getTimeRemaining(Orders,endtime){
   var curr_date = new Date();
   var t = endtime.getTime() - curr_date.getTime();
   var seconds = ("0" + Math.floor( (t/1000) % 60 )).slice(-2);
@@ -197,8 +210,11 @@ function getTimeRemaining(endtime){
   var days = Math.floor( t/(1000*60*60*24) );
 
   console.log(t)
-  if(t <= 0)
+  if(t <= 0){
     clearInterval(timeinterval);
+    var order_id = (Orders.find({"endTime":endtime}).fetch()[0]._id);
+    Orders.update({"_id":order_id},{$set:{"completed":true}});
+  }
 
   return {
     'total': t,
