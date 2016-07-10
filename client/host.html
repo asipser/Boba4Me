@@ -1,6 +1,11 @@
 <template name="host">
     <a href="/">Home</a> <br/>
     <h1> Room number {{number}} </h1> 
+	  <form class="host-modify-room"> <!-- maybe should have add to increment maximum # of orders button incase they want to accept more ppl? !-->
+		  <input type="text" name="tip" placeholder="Tip?" />
+		 	<input type="text" name="delivery" placeholder="Delivery?" />		
+	    <button class = "submit-order" type = "submit"> Submit.</button>
+	  </form>	
     <ul>
       {{#each orders}}
         {{> order_entry}}

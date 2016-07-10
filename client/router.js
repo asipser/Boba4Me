@@ -54,13 +54,19 @@ Router.route('/:_id',{
     target_id = params._id;
     if(Orders.find({"room":parseInt(target_id)}).count() > 0){
       Session.set('roomId', parseInt(target_id));
-      this.render("order");
+      var order = (Orders.find({"room":parseInt(target_id)}).fetch()[0]);
+      var ordersLeft = order.maxOrders - order.orders.length;
+      this.render("order",{
+        data: function () {
+          return {numOrders:ordersLeft, // sends the order template how many orders are left to be placed and if there is space for more orders to be placed!
+                  ordersLeft: ordersLeft > 0}
+        }
+      });
     }
     else{
       Router.go('/');
     }
   }
-
 });
 
 Template.newHost.events({ // need to stop enter from submitting form probably?
@@ -68,8 +74,8 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
       event.preventDefault();
       const target = event.target;
       const where = target.where.value; // gets place ordering from
-      const endTimeHours = parseInt(target.hours.value);
-      const endTimeMinutes = parseInt(target.minutes.value);
+      const endTimeHours = parseInt(target.hours.value); // WARNING: Needs to be an int
+      const endTimeMinutes = parseInt(target.minutes.value); // WARNING: Needs to be an int
       const maxOrders = parseInt(target.maxOrders.value); // gets max # of orders
       const secretWord = target.secretHost.value;
       var startTime = new Date();
@@ -88,9 +94,28 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
         endTime: endTime, // end date time!,
         place: where, // where people choose to eat,
         maxOrders:maxOrders,
+        delivery:0, // needs to be an integer
+        tip:0, // 
         secretWord:secretWord
       });
         Router.go('/host/'+id);
+  },
+});
+
+Template.host.events({
+  'submit .host-modify-room'(event){
+    event.preventDefault();
+    const target = event.target;
+    const delivery = parseInt(target.delivery.value);
+    const tip = parseInt(target.tip.value);
+
+    var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
+    Orders.update({"_id":room_id},{$set:{"delivery":delivery,"tip":tip}});
+
+    // target.delivery.disabled = true;
+    // target.tip.disabled = true;
+    //hide button somehow?
+
   },
 });
 
@@ -108,6 +133,7 @@ Template.order.events({
     orders_array.push({text:text, price:parseInt(price)});
     console.log(orders_array);
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
+    Router.go("/postUserOrder/"+Session.get("roomId"));
   },
 });
 
@@ -134,4 +160,52 @@ Template.home.helpers({
   joining() {
     return Session.get("joining");
   }
-})
+});
+
+Router.route('postUserOrder/:_id',{
+  loadingTemplate: 'loading',
+  waitOn: function () {
+    // return one handle, a function, or an array
+    return Meteor.subscribe('orders');
+  },
+  action: function () {
+    var params = this.params; 
+    target_id = params._id;
+    var order = Orders.find({"room":parseInt(target_id)}).fetch()[0];
+    //Session.set("t",getTimeRemaining(order.endTime));
+    timeinterval = setInterval(function () {
+      var t = getTimeRemaining(order.endTime);
+      Session.set("t", t);
+    }, 1000);
+    Session.set("t",getTimeRemaining(order.endTime));
+    this.render('postUserOrder', {
+        data: function (){
+          return {minutes:Session.get("t").minutes,
+                  seconds:Session.get("t").seconds,
+                  ended:Session.get("t").total <=0}
+        }
+    });
+  }
+});
+
+function getTimeRemaining(endtime){
+  var curr_date = new Date();
+  var t = endtime.getTime() - curr_date.getTime();
+  var seconds = ("0" + Math.floor( (t/1000) % 60 )).slice(-2);
+  var minutes = ("0" + Math.floor( (t/1000/60) % 60 )).slice(-2);
+  var hours = ("0" + Math.floor( (t/(1000*60*60)) % 24 )).slice(-2);
+  var days = Math.floor( t/(1000*60*60*24) );
+
+  console.log(t)
+  if(t <= 0)
+    clearInterval(timeinterval);
+
+  return {
+    'total': t,
+    'days': days,
+    'hours': hours,
+    'minutes': minutes,
+    'seconds': seconds
+  };
+
+}

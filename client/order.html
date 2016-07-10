@@ -1,8 +1,13 @@
 <template name="order">
   <a href="/">Back</a> <br/>
+ 	There are {{numOrders}} Orders left!
+ 	{{#if ordersLeft}}
   <form class="new-order">
-	  <input type="text" name="text" placeholder="Type to add new orders" />
+ 	  <input type="text" name="text" placeholder="Type to add new orders" />
 	 	<input type="text" name="price" placeholder="price?" />		
     <button class = "submit-order" type = "submit"> Submit.</button>
-  </form>	
+  </form>
+  {{else}}
+  	Sorry, there are no orders left D:
+  {{/if}}
 </template>
