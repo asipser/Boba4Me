@@ -6,7 +6,7 @@
 			{{#transition out="flipOutX:500" in="flipInX:500"}}
 		  	{{#if joining}}
 				  	<form class="join-room">&nbsp; <!-- Hack to make it size correctly -->
-			 			<input type="number" name="text" class="join-text" placeholder="####" autofocus />
+			 			<input type="number" name="text" class="join-text" placeholder="####" autofocus autocomplete="false" />
 			    		<button class="submit-button" type = "submit">join</button>
 			  		</form>
 	  		{{else}} 

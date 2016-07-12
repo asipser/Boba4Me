@@ -38,6 +38,11 @@ div.home.circle {
 			border: 0;
 			letter-spacing: 15pt;
 			color: @cl-tapioca;
+
+			&:focus {
+				outline: none;
+				background-color: white;
+			}
 		}
 		.submit-button {
 			position: absolute;
@@ -93,10 +98,6 @@ div.home.circle {
 		background-color: darken(@cl-tapioca, 15%);
 		color: @cl-tapioca;
 	}
-
-	.join-room.flipInY {
-		position: absolute;
-	}
 }
 
 @media only screen and (max-width: 900px) {
@@ -115,7 +116,7 @@ div.home.circle {
 			width: calc(60% - (10vw + 4px) );
 			.join-text {
 				padding: 5vw;
-				font-size: 3vw;
+				font-size: 2vw;
 			}
 			.submit-button {
 				width: calc(~"70% - 9vw");
@@ -123,7 +124,7 @@ div.home.circle {
 		}
 
 		.redir-btn, .join-room {
-			font-size: 3vw;
+			font-size: 2vw;
 			padding: 5vw;
 			margin-bottom: 5vw;
 		}
