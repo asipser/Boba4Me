@@ -52,31 +52,27 @@ Router.route('/:_id',{
   onBeforeAction: function () { // checks if order has run out of time (if it does it immediately ports to postUserOrder screen!)
     var params = this.params; 
     target_id = parseInt(params._id);
-    if(Orders.find({"room":target_id}).fetch()[0].completed){
+    if(Orders.find({"room":target_id}).count() <= 0){
+      Router.go('/');
+    }
+    else if(Orders.find({"room":target_id}).fetch()[0].completed){
       Router.go("/postUserOrder/" + target_id);
     }
-    else{
+    else
       this.next();
-    }
-
   },
   action: function () {
     var params = this.params;
     target_id = params._id;
-    if(Orders.find({"room":parseInt(target_id)}).count() > 0){
-      Session.set('roomId', parseInt(target_id));
-      var order = (Orders.find({"room":parseInt(target_id)}).fetch()[0]);
-      var ordersLeft = order.maxOrders - order.orders.length;
-      this.render("order",{
-        data: function () {
-          return {numOrders:ordersLeft, // sends the order template how many orders are left to be placed and if there is space for more orders to be placed!
-                  ordersLeft: ordersLeft > 0}
-        }
-      });
-    }
-    else{
-      Router.go('/');
-    }
+    Session.set('roomId', parseInt(target_id));
+    var order = (Orders.find({"room":parseInt(target_id)}).fetch()[0]);
+    var ordersLeft = order.maxOrders - order.orders.length;
+    this.render("order",{
+      data: function () {
+        return {numOrders:ordersLeft, // sends the order template how many orders are left to be placed and if there is space for more orders to be placed!
+                ordersLeft: ordersLeft > 0}
+      }
+    });
   }
 });
 
