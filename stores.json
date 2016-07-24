@@ -1,0 +1,30 @@
+"stores": {
+	"Kung Fu Tea": {
+		"display_name" : "Kung Fu Tea",
+		"toppings" : [
+			{"name" : "Bubbles", "price" : 0.50}
+		],
+		"menu" : [
+			{
+				"Kung Fu Classic": [
+					{
+						"name" : "KF Black Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 3.00},
+							{"name" : "Large", "price" : 3.75},
+							{"name" : "Hot", "price" : 3.75}
+						]
+					},
+					{
+						"name" : "KF Green Tea", 
+						"sizes" : [
+							{"name" : "Medium", "price" : 3.00},
+							{"name" : "Large", "price" : 3.75},
+							{"name" : "Hot", "price" : 3.75}
+						]
+					}
+				]
+			}
+		]
+	}
+}
