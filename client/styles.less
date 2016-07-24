@@ -49,10 +49,16 @@
 	src: url('/fonts/geomanist-ultra-webfont.ttf') format('truetype');
 }
 
+/*@std-boxshadow: 1px 1px 1px #888888;*/
+@std-boxshadow: 0;
+
+
 @import "{}/client/stylesheets/home.import.less";
+@import "{}/client/stylesheets/newhost.import.less";
 
 html, body {
 	background-color: @cl-milktea;
+	color: @cl-tapioca;
 	font-family: geomanist-regular;
 	width: 100%;
 	height: 100%;
@@ -61,3 +67,37 @@ html, body {
 	padding: 0;
 }
 
+.back-btn {
+	border-radius: 50%;
+	background-color: @cl-tapioca;
+	color: @cl-lighterblue;
+	font-family: geomanist-bold;
+	font-size: 38px;
+	height: 50px;
+	width: 50px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	z-index: 101;
+}
+
+.container-center {
+	text-align: center;
+	z-index: 100;
+	position: relative;
+}
+
+.background-circle {
+	position: fixed;
+	background-color: @cl-tapioca;
+	opacity: 0.3;
+	border-radius: 50%;
+	width: 70vw;
+	height: 70vw;
+	max-width: 600px;
+	max-height: 600px;
+	z-index: 0;
+}

@@ -81,13 +81,10 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
       event.preventDefault();
       const target = event.target;
       const where = target.where.value; // gets place ordering from
-      const endTimeHours = parseInt(target.hours.value); // WARNING: Needs to be an int
-      const endTimeMinutes = parseInt(target.minutes.value); // WARNING: Needs to be an int
       const maxOrders = parseInt(target.maxOrders.value); // gets max # of orders
       const secretWord = target.secretHost.value;
       var startTime = new Date();
-      var endTime = new Date(startTime.getTime() + (endTimeMinutes+(endTimeHours*60))*60000); // dates calculated by milliseconds thus mutliply by 60000
-      //console.log("startTime " + startTime.toTimeString() + " endTime: " + endTime.toTimeString());
+      var endTime = new Date(target.when.value);
       var id = Math.floor(Math.random()*10000);
       while(Orders.find({"room":id}).count() > 0){ // check to make sure duplicate room not created!
         id = Math.floor(Math.random()*10000);
@@ -111,6 +108,13 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
   },
 });
 
+// set default order ending time to 15 min from now
+Template.newHost.onRendered(function() {
+  const now = new Date();
+  const MINUTES_OFFSET = 15;
+  $("#when").val(dateToInputString(new Date(new Date().setMinutes(now.getMinutes() + MINUTES_OFFSET)))); 
+})
+
 Template.host.events({
   'submit .host-modify-room'(event){
     event.preventDefault();
@@ -127,8 +131,6 @@ Template.host.events({
 
   },
 });
-
-
 
 Template.order.events({
   'submit .new-order'(event) {
@@ -220,4 +222,22 @@ function getTimeRemaining(Orders,endtime){
     'seconds': seconds
   };
 
+}
+
+// outputs string like "2014-11-16T15:25"
+var dateToInputString = (date) => {
+  return String(date.getFullYear()) 
+    + "-" + bufferWithZeroes(String(date.getMonth() + 1), 2) // months are 0-indexed
+    + "-" + bufferWithZeroes(String(date.getDate()), 2)
+    + "T" + bufferWithZeroes(String(date.getHours()), 2)
+    + ":" + bufferWithZeroes(String(date.getMinutes()), 2);
+}
+
+// buffers the front of @input with zeroes to make it @desiredLength
+var bufferWithZeroes = (input, desiredLength) => {
+  var output = input;
+  while (output.length < desiredLength) {
+    output = "0" + output;
+  }
+  return output;
 }

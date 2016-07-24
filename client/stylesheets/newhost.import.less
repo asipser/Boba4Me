@@ -1,0 +1,74 @@
+.newHost {
+	text-align: left;
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+	background-color: @cl-blue;
+	padding: 30px;
+	border-radius: 12px;	
+	z-index: 1;
+    box-shadow: @std-boxshadow;
+
+	label {
+		font-size: smaller;
+	}
+
+	h1 {
+		vertical-align: middle;
+		text-align: center;
+	}
+
+	button[type="submit"] {
+		background-color: @cl-lighterblue;
+		color: @cl-tapioca;
+		padding: 20px;
+		border: 0;
+		font-family: geomanist-bold;
+		font-size: 120%;
+		border-radius: 6px;
+		width: calc(70vw + 5.5px);
+		max-width: 290px;
+        box-shadow: @std-boxshadow;
+
+		&:hover {
+			background-color: @cl-white;
+			cursor: pointer;
+		}
+	}
+
+	input, select {
+		margin-bottom: 20px;
+		font-family: geomanist-book;
+		padding: 10px;
+		border-radius: 6px;
+		border: 0;
+		width: 70vw;
+		max-width: 270px;
+        box-shadow: @std-boxshadow;
+	}
+
+	select {
+		width: calc(70vw + 6px);
+		max-width: 290px;
+	}	
+
+	.form-optional {
+		opacity: 0.8;
+	}
+}
+
+.newHost-circle-1 {
+	left: -100px;
+	top: 100px;
+}
+
+.newHost-circle-2 {
+	right: -100px;
+	bottom: -100px;
+}
+
+.newHost-circle-3 {
+	right: -200px;
+	top: -500px;
+}

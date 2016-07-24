@@ -22,3 +22,4 @@ iron:router
 session
 less
 webtempest:animate
+pagebakers:ionicons
