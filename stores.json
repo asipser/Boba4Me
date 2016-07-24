@@ -1,12 +1,13 @@
 "stores": {
 	"Kung Fu Tea": {
-		"display_name" : "Kung Fu Tea",
+		"name" : "Kung Fu Tea",
 		"toppings" : [
 			{"name" : "Bubbles", "price" : 0.50}
 		],
 		"menu" : [
 			{
-				"Kung Fu Classic": [
+				"name" : "Kung Fu Classic",
+				"items": [
 					{
 						"name" : "KF Black Tea",
 						"sizes" : [
@@ -21,6 +22,18 @@
 							{"name" : "Medium", "price" : 3.00},
 							{"name" : "Large", "price" : 3.75},
 							{"name" : "Hot", "price" : 3.75}
+						]
+					}
+				]
+			},
+			{
+				"name" : "Kung Fu Punch",
+				"items" : [
+					{
+						"name" : "Honey Lemonade",
+						"sizes" : [
+							{"name" : "Medium", "price" : 3.25},
+							{"name" : "Large", "price" : 4.25}
 						]
 					}
 				]
