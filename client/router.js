@@ -83,6 +83,7 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
       const where = target.where.value; // gets place ordering from
       const maxOrders = parseInt(target.maxOrders.value); // gets max # of orders
       const secretWord = target.secretHost.value;
+      console.log("" === target.secretHost.value);
       var startTime = new Date();
       var endTime = new Date(target.when.value);
       var id = Math.floor(Math.random()*10000);
