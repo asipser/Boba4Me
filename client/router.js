@@ -85,7 +85,8 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
       const secretWord = target.secretHost.value;
       console.log("" === target.secretHost.value);
       var startTime = new Date();
-      var endTime = new Date(target.when.value);
+      var endTime = timestringToDate(target.when.value, new Date());
+      console.log(endTime);
       var id = Math.floor(Math.random()*10000);
       while(Orders.find({"room":id}).count() > 0){ // check to make sure duplicate room not created!
         id = Math.floor(Math.random()*10000);
@@ -225,13 +226,17 @@ function getTimeRemaining(Orders,endtime){
 
 }
 
-// outputs string like "2014-11-16T15:25"
+// outputs string like "15:25"
 var dateToInputString = (date) => {
-  return String(date.getFullYear()) 
-    + "-" + bufferWithZeroes(String(date.getMonth() + 1), 2) // months are 0-indexed
-    + "-" + bufferWithZeroes(String(date.getDate()), 2)
-    + "T" + bufferWithZeroes(String(date.getHours()), 2)
+  return bufferWithZeroes(String(date.getHours()), 2)
     + ":" + bufferWithZeroes(String(date.getMinutes()), 2);
+}
+
+var timestringToDate = (timestring, date) => {
+  return new Date(String(date.getFullYear()) 
+      + "-" + bufferWithZeroes(String(date.getMonth() + 1), 2) // months are 0-indexed
+      + "-" + bufferWithZeroes(String(date.getDate()), 2)
+      + "T" + timestring)
 }
 
 // buffers the front of @input with zeroes to make it @desiredLength
