@@ -132,6 +132,10 @@ Template.host.events({
     //hide button somehow?
 
   },
+  'click .cancel'(event){
+    event.preventDefault();
+    console.log(event);
+  },
 });
 
 Template.order.events({
