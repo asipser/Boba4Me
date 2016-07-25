@@ -1,4 +1,4 @@
-  "stores": {
+exports.STORES =  {
 	"Kung Fu Tea": {
 		"name" : "Kung Fu Tea",
 		"toppings" : [
@@ -408,4 +408,4 @@
 			}
 		]
 	}
-}
+};
