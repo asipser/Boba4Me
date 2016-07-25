@@ -225,9 +225,9 @@ Template.milkteaBG.helpers({
     //const xoffset = Session.get("sineCounter");
     const xoffset = total;
     pointList = [[0, height].join(",")];
-    for (var i = 0; i <= width/20 ; i++) {
-      var xval = i*20 + xoffset;
-      pointList.push([i*20, height-(BASELINE + AMPLITUDE * Math.sin(6.28 * xval / width))].join(","));
+    for (var i = 0; i <= width ; i++) {
+      var xval = i + xoffset;
+      pointList.push([i, height-(BASELINE + AMPLITUDE * Math.sin(6.28 * xval / width))].join(","));
     }
     pointList.push([width, height].join(","));
     pointList.push([0, height].join(","));
