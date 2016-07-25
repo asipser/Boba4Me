@@ -223,7 +223,7 @@ Template.milkteaBG.helpers({
     }
     const BASELINE = height - AMPLITUDE;
     //const xoffset = Session.get("sineCounter");
-    const xoffset = total;
+    const xoffset = total/10;
     pointList = [[0, height].join(",")];
     for (var i = 0; i <= width ; i++) {
       var xval = i + xoffset;

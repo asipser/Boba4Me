@@ -51,6 +51,7 @@
 
 /*@std-boxshadow: 1px 1px 1px #888888;*/
 @std-boxshadow: 0;
+@container-padding: 30px;
 
 
 @import "{}/client/stylesheets/home.import.less";
@@ -89,6 +90,9 @@ html, body {
 	text-align: center;
 	z-index: 100;
 	position: relative;
+	overflow: auto;
+	padding-top: @container-padding;
+	max-height: calc(100vh);
 }
 
 .background-circle {
