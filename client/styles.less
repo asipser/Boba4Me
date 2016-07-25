@@ -55,6 +55,7 @@
 
 @import "{}/client/stylesheets/home.import.less";
 @import "{}/client/stylesheets/newhost.import.less";
+@import "{}/client/stylesheets/postuserorder.import.less";
 
 html, body {
 	background-color: @cl-milktea;
@@ -99,5 +100,21 @@ html, body {
 	height: 70vw;
 	max-width: 600px;
 	max-height: 600px;
-	z-index: 0;
+	z-index: 2;
+}
+
+.svg-milktea {
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+	polygon.milktea {
+		fill: @cl-milktea;
+		opacity: 0.8;
+	}
+	polygon.straw {
+		fill: @cl-blue;
+	}
 }

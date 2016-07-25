@@ -193,15 +193,74 @@ Router.route('postUserOrder/:_id',{
     timeinterval = setInterval(function () {
       var t = getTimeRemaining(Orders,order.endTime);
       Session.set("t", t);
-    }, 1000);
+    }, 100);
     Session.set("t",getTimeRemaining(Orders,order.endTime));
+    var time = Session.get("t");
     this.render('postUserOrder', {
         data: function (){
-          return {minutes:Session.get("t").minutes,
-                  seconds:Session.get("t").seconds,
-                  ended:Session.get("t").total <=0}
+          return {
+                  hours:time.hours,
+                  minutes:time.minutes,
+                  seconds:time.seconds,
+                  ended:time.total <=0,
+                  total:time.total
+                }
         }
     });
+  }
+});
+
+Template.milkteaBG.helpers({
+  milktea(hours, minutes, seconds, total) {
+    const AMPLITUDE = 20;
+    const width = window.innerWidth;
+    var height = window.innerHeight;
+    const h = parseInt(hours);
+    const m = parseInt(minutes);
+    const s = parseInt(seconds);
+    if (!(h > 0 || h > 15)) {
+      height *= (m*60+s)/(60*15); // 15 minutes
+    }
+    const BASELINE = height - AMPLITUDE;
+    //const xoffset = Session.get("sineCounter");
+    const xoffset = total;
+    pointList = [[0, height].join(",")];
+    for (var i = 0; i <= width/20 ; i++) {
+      var xval = i*20 + xoffset;
+      pointList.push([i*20, height-(BASELINE + AMPLITUDE * Math.sin(6.28 * xval / width))].join(","));
+    }
+    pointList.push([width, height].join(","));
+    pointList.push([0, height].join(","));
+    //Session.set("sineCounter", xoffset+0.1);
+    return pointList.join(" ");
+  },
+
+  yOffset(hours, minutes, seconds) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const h = parseInt(hours);
+    const m = parseInt(minutes);
+    const s = parseInt(seconds);
+    var pointList = [[0,0].join(",")];
+    if ((h > 0 || h > 15)) {
+      return 0;
+    } else {
+      return height - (height * (m*60+s)/(60*15));
+    }
+  }, 
+
+  straw() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const STRAW_RADIUS = 50;
+    var pointList = [
+      [width*5/8 - STRAW_RADIUS, 0].join(","),
+      [width*5/8 + STRAW_RADIUS, 0].join(","),
+      [width*3/8 + STRAW_RADIUS, height].join(","),
+      [width*3/8 - STRAW_RADIUS, height].join(","),
+      [width*5/8 - STRAW_RADIUS, 0].join(",")
+    ];
+    return pointList.join(" ");
   }
 });
 
@@ -213,7 +272,6 @@ function getTimeRemaining(Orders,endtime){
   var hours = ("0" + Math.floor( (t/(1000*60*60)) % 24 )).slice(-2);
   var days = Math.floor( t/(1000*60*60*24) );
 
-  console.log(t)
   if(t <= 0){
     clearInterval(timeinterval);
     var order_id = (Orders.find({"endTime":endtime}).fetch()[0]._id);
