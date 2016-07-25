@@ -92,7 +92,7 @@ html, body {
 	position: relative;
 	overflow: auto;
 	padding-top: @container-padding;
-	max-height: calc(100vh);
+	max-height: ~"calc(100vh - @{container-padding})";
 }
 
 .background-circle {
