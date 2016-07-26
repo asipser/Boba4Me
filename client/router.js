@@ -3,6 +3,7 @@ import './app.html';
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { STORES } from './stores.js';
 
 Router.configure({
     layoutTemplate: 'mainLayout'
