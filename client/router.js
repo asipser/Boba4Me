@@ -32,13 +32,21 @@ Router.route('/host/:_id',{
   },
   action: function () {
     var params = this.params; // { _id: "5" }
-    room_id = params._id;
+    var room_id = params._id;
     room_id = parseInt(room_id);
     Session.set("roomId",room_id);
+
     this.render('host', {
         data: function () {
+          var order = Orders.find({"room":room_id}).fetch()[0];
+          var orders = order.orders;
+          for(var i=0;i<orders.length;i++){
+            var price = orders[i]['price'];
+            // What is correct tax amount? I think food is 6.5, but sales is 6.25%...
+            orders[i]['price'] = (price * 1.065) + (price * order.tip) + (order.delivery/orders.length);
+          }
           return {number:room_id,
-          orders: Orders.find({"room":room_id}).fetch()[0].orders}
+          orders: orders} 
         }
     });
   }
@@ -154,8 +162,8 @@ Template.host.events({
   'submit .host-modify-room'(event){
     event.preventDefault();
     const target = event.target;
-    const delivery = parseInt(target.delivery.value);
-    const tip = parseInt(target.tip.value);
+    const delivery = parseFloat(target.delivery.value);
+    const tip = parseFloat(target.tip.value)/100; // expected entry is a percent
 
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     Orders.update({"_id":room_id},{$set:{"delivery":delivery,"tip":tip}});
