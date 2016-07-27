@@ -3,8 +3,13 @@ import './app.html';
 import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { STORES } from './stores.js';
-
+import { STORES, STORE_NAMES } from './stores.js';
+// use as MONEY_FORMATTER.format(100)
+const MONEY_FORMATTER = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+}); 
 Router.configure({
     layoutTemplate: 'mainLayout'
 });
@@ -77,10 +82,20 @@ Router.route('/:_id',{
     Session.set('roomId', parseInt(target_id));
     var order = (Orders.find({"room":parseInt(target_id)}).fetch()[0]);
     var ordersLeft = order.maxOrders - order.orders.length;
+    var store = Session.get('store');
+    if (store) {
+      console.log(store);
+    } else {
+      Session.set('store', STORE_NAMES[0]);
+    }
     this.render("order",{
       data: function () {
         return {numOrders:ordersLeft, // sends the order template how many orders are left to be placed and if there is space for more orders to be placed!
-                ordersLeft: ordersLeft > 0}
+                ordersLeft: ordersLeft > 0,
+                storeNames: STORE_NAMES,
+                stores: STORES,
+                store: order.place
+              }
       }
     });
   }
@@ -176,20 +191,135 @@ Template.host.events({
   }
 });
 
+Template.order.onCreated(function(){ 
+  this.selectedDrink = new ReactiveVar(STORES[this.data.store].menu[0].items[0].name);
+  this.selectedCategoryIndex = new ReactiveVar(0);
+  var t = {};
+  STORES[this.data.store].toppings.forEach(function(item) {
+    t[item.name] = false;
+  })
+  this.selectedToppings = new ReactiveVar(t);
+  this.selectedSize = new ReactiveVar('-$0');
+  this.price = new ReactiveVar(0);
+});
+
+Template.order.helpers({
+  selectedDrink: function() {
+    return Template.instance().selectedDrink.get();
+  },
+
+  selectedCategoryIndex: function() {
+    return Template.instance().selectedCategoryIndex.get();
+  },
+
+  selectedToppings: function() {
+    return Template.instance().selectedToppings.get();
+  },
+
+  selectedSize: function() {
+    return Template.instance().selectedSize.get();
+  },
+
+  price: function() {
+    const t = Template.instance().selectedToppings.get();
+    var toppingsPrice = 0;
+    STORES[this.store].toppings.forEach(function(item) {
+      if (t[item.name]) {
+        toppingsPrice += item.price;
+      }
+    })
+    const sizePrice = parseFloat(Template.instance().selectedSize.get().split('$')[1]);
+    return toppingsPrice + sizePrice
+  },
+
+  menu: function() {
+    return STORES[this.store].menu;
+  },
+
+  drinksPerCategory: function(category) {
+    return category.items;
+  },
+
+  sizes: function() {
+    console.log(this)
+    const store = this.store;
+    const categoryIndex = Template.instance().selectedCategoryIndex.get();
+    const drink = Template.instance().selectedDrink.get();
+    const drinkIndex = STORES[store].menu[categoryIndex].items.findIndex(function(element){return element.name == drink});
+    return drinkObj = STORES[store].menu[categoryIndex].items[drinkIndex].sizes;
+  },
+
+  valueNamePrice: function(size) {
+    return size.name + "$" + size.price;
+  },
+
+  displayPrice: function(price) {
+    return MONEY_FORMATTER.format(price); 
+  },
+
+  toppings: function() {
+    return STORES[this.store].toppings;
+  },
+
+  sugars: function() {
+    return STORES[this.store].sugar;
+  },
+
+  ices: function() {
+    return STORES[this.store].ice;
+  }
+})
+
 Template.order.events({
-  'submit .new-order'(event) {
+  'submit .new-order'(event, template) {
     event.preventDefault();
-    const target = event.target;
-    const text = target.text.value; // gets order
-    const price = target.price.value; // gets price (later wont be an input but will be calculated by selected options)
+    const name = event.target.name.value;
+    const drink = template.selectedDrink.get();
+    const size = template.selectedSize.get();
+    const t = template.selectedToppings.get();
+    const toppings = Object.keys(t).filter(function(item) {
+      return t[item];
+    })
+    const sugar = event.target.sugar.value;
+    const ice = event.target.ice.value;
+    const price = template.price.get();
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);
-    console.log(room_id);
-    orders_array.push({text:text, price:parseInt(price), order_id:guid()});
+    orders_array.push({
+      name: name, 
+      drink: drink,
+      size: size,
+      toppings: toppings,
+      sugar: sugar,
+      ice: ice,
+      price: price, 
+      order_id:guid()
+    });
     console.log(orders_array);
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
     Router.go("/postUserOrder/"+Session.get("roomId"));
   },
+
+  'change .drink-select' (event, template) {
+    template.selectedDrink.set(event.target.value);
+    const store = this.store;
+    const drink = event.target.value;
+    const categories = STORES[store].menu.map(function(obj){return obj.name});
+    const selectedCategory = event.target.selectedOptions[0].parentElement.label;
+    template.selectedCategoryIndex.set(categories.indexOf(selectedCategory));
+  },
+
+  'change input[name="size"]' (event, template) {
+    template.selectedSize.set(event.target.value);
+  },
+
+  'change input[name="toppings"]' (event, template) {
+    console.log( event)
+    const topping = event.target.value.split("$")[0];
+    var currentToppings = template.selectedToppings.get();
+    currentToppings[topping] = event.target.checked;
+    template.selectedToppings.set(currentToppings);
+  }
 });
 
 Template.home.events({

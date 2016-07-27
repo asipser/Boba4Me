@@ -2,10 +2,49 @@
   <a href="/">Back</a> <br/>
  	There are {{numOrders}} Orders left!
  	{{#if ordersLeft}}
-  <form class="new-order">
- 	  <input type="text" name="text" placeholder="Type to add new orders" />
-	 	<input type="text" name="price" placeholder="price?" />		
-    <button class = "submit-order" type = "submit"> Submit.</button>
+ 	<br>
+
+  	<form class="new-order">
+      <h3>Name</h3>
+  	  <input type="text" name="name" placeholder="Name" /><br>
+  	  <h3>Drink</h3>
+  	  <select class="drink-select">
+  	  	{{#each category in menu}}
+  	  		<optgroup label={{category.name}}>
+  	  			{{#each drink in drinksPerCategory category}}
+  	  				<option value={{drink.name}}>{{drink.name}}</option>
+  	  			{{/each}}
+  	  		</optgroup>
+  	  	{{/each}}
+  	  </select>
+  	  <div>
+  	    <h3>Size</h3>
+  	  	{{#each size in sizes}}
+  	  		<input type="radio" name="size" value={{valueNamePrice size}} />{{size.name}} ({{displayPrice size.price}})
+  	  	{{/each}}
+  	  </div>
+  	  <div>
+  	    <h3>Toppings</h3>
+  	  	{{#each topping in toppings}}
+  	  		<input type="checkbox" name="toppings" value={{valueNamePrice topping}} />{{topping.name}} ({{displayPrice topping.price}})
+  	  	{{/each}}
+  	  </div>
+  	  <div>
+  	    <h3>Sugar Level</h3>
+  	  	{{#each sugar in sugars}}
+  	  		<input type="radio" name="sugar" value={{sugar.name}} />{{sugar.name}}
+  	  	{{/each}}
+  	  </div>
+  	  <div>
+  	    <h3>Ice Level</h3>
+  	  	{{#each ice in ices}}
+  	  		<input type="radio" name="ice" value={{ice.name}} />{{ice.name}}
+  	  	{{/each}}
+  	  </div>
+  	  <div>
+  	  	<h3>Total: {{displayPrice price}}</h3>
+  	  </div>
+      <button class = "submit-order" type = "submit"> Submit.</button>
   </form>
   {{else}}
   	Sorry, there are no orders left D:
