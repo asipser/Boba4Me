@@ -229,6 +229,7 @@ Template.order.helpers({
       }
     })
     const sizePrice = parseFloat(Template.instance().selectedSize.get().split('$')[1]);
+    Template.instance().price.set(toppingsPrice + sizePrice);
     return toppingsPrice + sizePrice
   },
 
@@ -306,7 +307,16 @@ Template.order.events({
     const drink = event.target.value;
     const categories = STORES[store].menu.map(function(obj){return obj.name});
     const selectedCategory = event.target.selectedOptions[0].parentElement.label;
-    template.selectedCategoryIndex.set(categories.indexOf(selectedCategory));
+    const categoryIndex = categories.indexOf(selectedCategory);
+    template.selectedCategoryIndex.set(categoryIndex);
+    var size = event.target.parentElement.size.value
+    size = size ? size.split('$')[0] : "";
+    const items = STORES[store].menu[categoryIndex].items;
+    const drinkObj = items.find(function(item){return item.name == drink});
+    const sizes = drinkObj ? drinkObj.sizes : [];
+    const sizeObj = sizes.find(function(item){return item.name = size}) || {'name': '-', 'price': 0}
+    template.selectedSize.set(sizeObj.name+'$'+sizeObj.price);
+    console.log(template.selectedSize.get())
   },
 
   'change input[name="size"]' (event, template) {
