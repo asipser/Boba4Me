@@ -15,7 +15,15 @@
 
 <template name="order_entry">
  <div class = "order-container">
-  <li>Name:{{name}} Price: {{price}}</li>
+  <li>
+    Name:{{name}} Order: {{size}} {{drink}} , {{sugar}} , {{ice}}. <br>Toppings:
+    <ul>
+      {{#each topping in toppings}}
+        <li>{{topping}}</li>
+      {{/each}}
+    </ul>  
+    Price: ${{price}}
+  </li>
   <button class = "cancel" type = "button"> N </button>
   <button class = "fade" type = "button"> Y </button>
 </div>

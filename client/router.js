@@ -48,10 +48,11 @@ Router.route('/host/:_id',{
         data: function () {
           var order = Orders.find({"room":room_id}).fetch()[0];
           var orders = order.orders;
+          console.log(order);
           for(var i=0;i<orders.length;i++){
             var price = orders[i]['price'];
             // What is correct tax amount? I think food is 6.5, but sales is 6.25%...
-            orders[i]['price'] = (price * 1.065) + (price * order.tip) + (order.delivery/orders.length);
+            orders[i]['price'] = +((price * 1.065) + (price * order.tip) + (order.delivery/orders.length)).toFixed(2);
           }
           return {number:room_id,
           orders: orders} 
@@ -277,7 +278,8 @@ Template.order.events({
     event.preventDefault();
     const name = event.target.name.value;
     const drink = template.selectedDrink.get();
-    const size = template.selectedSize.get();
+    var size = template.selectedSize.get();
+    size = size.substring(0,size.indexOf('$'));
     const t = template.selectedToppings.get();
     const toppings = Object.keys(t).filter(function(item) {
       return t[item];
@@ -285,6 +287,9 @@ Template.order.events({
     const sugar = event.target.sugar.value;
     const ice = event.target.ice.value;
     const price = template.price.get();
+
+    Session.set("total_owed",(Session.get("total_owed") || 0) + parseFloat(price));
+
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);
     orders_array.push({
