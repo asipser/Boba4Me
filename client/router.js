@@ -52,7 +52,7 @@ Router.route('/host/:_id',{
           for(var i=0;i<orders.length;i++){
             var price = orders[i]['price'];
             // What is correct tax amount? I think food is 6.5, but sales is 6.25%...
-            orders[i]['price'] = +((price * 1.065) + (price * order.tip) + (order.delivery/orders.length)).toFixed(2);
+            orders[i]['price'] = +((price * 1.065) + (price * (order.tip||0)) + ((order.delivery||0)/orders.length)).toFixed(2);
           }
           return {number:room_id,
           orders: orders} 
