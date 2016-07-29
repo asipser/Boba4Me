@@ -1,4 +1,4 @@
-exports.STORES = {
+export const STORES = {
 	"Kung Fu Tea": {
 		"name" : "Kung Fu Tea",
 		"toppings" : [
@@ -410,4 +410,4 @@ exports.STORES = {
 	}
 };
 
-exports.STORE_NAMES = Object.keys(exports.STORES);
+export const STORE_NAMES = Object.keys(STORES);

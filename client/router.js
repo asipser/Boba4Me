@@ -4,6 +4,8 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { STORES, STORE_NAMES } from './stores.js';
+const _STORES = STORES;
+const _STORE_NAMES = STORE_NAMES;
 // use as MONEY_FORMATTER.format(100)
 const MONEY_FORMATTER = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -86,14 +88,14 @@ Router.route('/:_id',{
     if (store) {
       console.log(store);
     } else {
-      Session.set('store', STORE_NAMES[0]);
+      Session.set('store', _STORE_NAMES[0]);
     }
     this.render("order",{
       data: function () {
         return {numOrders:ordersLeft, // sends the order template how many orders are left to be placed and if there is space for more orders to be placed!
                 ordersLeft: ordersLeft > 0,
-                storeNames: STORE_NAMES,
-                stores: STORES,
+                storeNames: _STORE_NAMES,
+                stores: _STORES,
                 store: order.place
               }
       }
@@ -192,10 +194,10 @@ Template.host.events({
 });
 
 Template.order.onCreated(function(){ 
-  this.selectedDrink = new ReactiveVar(STORES[this.data.store].menu[0].items[0].name);
+  this.selectedDrink = new ReactiveVar(_STORES[this.data.store].menu[0].items[0].name);
   this.selectedCategoryIndex = new ReactiveVar(0);
   var t = {};
-  STORES[this.data.store].toppings.forEach(function(item) {
+  _STORES[this.data.store].toppings.forEach(function(item) {
     t[item.name] = false;
   })
   this.selectedToppings = new ReactiveVar(t);
@@ -223,7 +225,7 @@ Template.order.helpers({
   price: function() {
     const t = Template.instance().selectedToppings.get();
     var toppingsPrice = 0;
-    STORES[this.store].toppings.forEach(function(item) {
+    _STORES[this.store].toppings.forEach(function(item) {
       if (t[item.name]) {
         toppingsPrice += item.price;
       }
@@ -234,7 +236,7 @@ Template.order.helpers({
   },
 
   menu: function() {
-    return STORES[this.store].menu;
+    return _STORES[this.store].menu;
   },
 
   drinksPerCategory: function(category) {
@@ -242,12 +244,11 @@ Template.order.helpers({
   },
 
   sizes: function() {
-    console.log(this)
     const store = this.store;
     const categoryIndex = Template.instance().selectedCategoryIndex.get();
     const drink = Template.instance().selectedDrink.get();
-    const drinkIndex = STORES[store].menu[categoryIndex].items.findIndex(function(element){return element.name == drink});
-    return drinkObj = STORES[store].menu[categoryIndex].items[drinkIndex].sizes;
+    const drinkIndex = _STORES[store].menu[categoryIndex].items.findIndex(function(element){return element.name == drink});
+    return _STORES[store].menu[categoryIndex].items[drinkIndex].sizes;
   },
 
   valueNamePrice: function(size) {
@@ -259,15 +260,15 @@ Template.order.helpers({
   },
 
   toppings: function() {
-    return STORES[this.store].toppings;
+    return _STORES[this.store].toppings;
   },
 
   sugars: function() {
-    return STORES[this.store].sugar;
+    return _STORES[this.store].sugar;
   },
 
   ices: function() {
-    return STORES[this.store].ice;
+    return _STORES[this.store].ice;
   }
 })
 
@@ -305,18 +306,17 @@ Template.order.events({
     template.selectedDrink.set(event.target.value);
     const store = this.store;
     const drink = event.target.value;
-    const categories = STORES[store].menu.map(function(obj){return obj.name});
+    const categories = _STORES[store].menu.map(function(obj){return obj.name});
     const selectedCategory = event.target.selectedOptions[0].parentElement.label;
     const categoryIndex = categories.indexOf(selectedCategory);
     template.selectedCategoryIndex.set(categoryIndex);
-    var size = event.target.parentElement.size.value
-    size = size ? size.split('$')[0] : "";
-    const items = STORES[store].menu[categoryIndex].items;
+    var size = template.selectedSize.get();
+    const sizeName = size ? size.split('$')[0] : "";
+    const items = _STORES[store].menu[categoryIndex].items;
     const drinkObj = items.find(function(item){return item.name == drink});
-    const sizes = drinkObj ? drinkObj.sizes : [];
-    const sizeObj = sizes.find(function(item){return item.name = size}) || {'name': '-', 'price': 0}
+    const drinkSizes = drinkObj ? drinkObj.sizes : [];
+    const sizeObj = drinkSizes.find(function(item){return item.name == sizeName}) || {'name': '-', 'price': 0}
     template.selectedSize.set(sizeObj.name+'$'+sizeObj.price);
-    console.log(template.selectedSize.get())
   },
 
   'change input[name="size"]' (event, template) {
@@ -324,7 +324,6 @@ Template.order.events({
   },
 
   'change input[name="toppings"]' (event, template) {
-    console.log( event)
     const topping = event.target.value.split("$")[0];
     var currentToppings = template.selectedToppings.get();
     currentToppings[topping] = event.target.checked;
