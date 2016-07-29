@@ -204,7 +204,24 @@ Template.order.onCreated(function(){
   this.selectedToppings = new ReactiveVar(t);
   this.selectedSize = new ReactiveVar('-$0');
   this.price = new ReactiveVar(0);
+  $(window).resize(function() {
+    var dim = Math.max($(".new-order").width(), $(".new-order").height());
+    $(".background-circle.order-circle-1").width(dim);
+    $(".background-circle.order-circle-1").height(dim);
+    $(".background-circle.order-circle-1").css("margin-left", -dim/2);
+  })
 });
+
+Template.order.onDestroyed(function() {
+  $(window).off("resize");
+})
+
+Template.order.onRendered(function() {
+    var dim = Math.max($(".new-order").width(), $(".new-order").height());
+    $(".background-circle.order-circle-1").width(dim);
+    $(".background-circle.order-circle-1").height(dim);
+    $(".background-circle.order-circle-1").css("margin-left", -dim/2);
+})
 
 Template.order.helpers({
   selectedDrink: function() {
@@ -270,6 +287,10 @@ Template.order.helpers({
 
   ices: function() {
     return _STORES[this.store].ice;
+  },
+
+  parseToID: function(s) {
+    return s.replace(/\s/g, "X");
   }
 })
 

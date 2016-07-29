@@ -1,0 +1,71 @@
+.order.container-center {
+	z-index: 2;
+	color: @cl-white;
+	input[type="radio"], input[type="checkbox"] {
+		display: none;
+		&:checked + .fake-btn {
+			color: @cl-tapioca;
+			background-color: @cl-white;
+			border: 3px solid @cl-white;
+		}
+	}
+	.fake-btn {
+		display: inline-block;
+		text-align: center;
+		width: 100px;
+		background-color: rgba(0,0,0,0);
+		border: 3px solid @cl-blue;
+		color: @cl-blue;
+		font-family: geomanist-black;
+		padding: 10px;
+		border-radius: 6px;
+		font-size: 90%;
+		margin-top: 3px;
+
+		&.size-btn {
+			width: 60px;
+		}
+
+		&:hover {
+			cursor: pointer;
+			background-color: @cl-lighterblue;
+		}
+	}
+	h3 {
+		font-family: geomanist-bold;
+		color: @cl-blue;
+		font-size: 200%;
+		margin-bottom: 0;
+	}
+
+	form.new-order {
+		max-width: 90vw;
+		margin-left: auto;
+		margin-right: auto;
+		clip-path: circle(100% at center);
+	}
+
+	input[type="text"], select{
+		padding: 10px;
+		width: 230px;
+		font-family: geomanist-regular;
+		background-color: @cl-white;
+		color: @cl-tapioca;
+		border: 3px solid @cl-blue;
+		border-radius: 6px;
+	}
+
+	select {
+		width: 260px;
+	}
+}
+
+.background-circle.order-circle-1 {
+	z-index: 0;
+	opacity: 1;
+	position: fixed;
+	top: -10%;
+    left: 50%;
+	max-width: none;
+	max-height: none;
+}

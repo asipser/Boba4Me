@@ -57,6 +57,7 @@
 @import "{}/client/stylesheets/home.import.less";
 @import "{}/client/stylesheets/newhost.import.less";
 @import "{}/client/stylesheets/postuserorder.import.less";
+@import "{}/client/stylesheets/order.import.less";
 
 html, body {
 	background-color: @cl-milktea;
@@ -90,7 +91,8 @@ html, body {
 	text-align: center;
 	z-index: 100;
 	position: relative;
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 	padding-top: @container-padding;
 	max-height: ~"calc(100vh - 50px)";
 }

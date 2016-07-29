@@ -10,17 +10,17 @@ export const STORES = {
 			{"name" : "Pudding", "price" : 0.50}
 		],
 		"sugar":[
-		  {"name":"Extra Sugar"},
-		  {"name":"Regular Sugar"},
-		  {"name":"Less Sugar"},
-		  {"name":"Half Sugar"},
+		  {"name":"Zero Sugar"},
 		  {"name":"Little Sugar"},
-		  {"name":"Zero Sugar"}
+		  {"name":"Half Sugar"},
+		  {"name":"Less Sugar"},
+		  {"name":"Regular Sugar"},
+		  {"name":"Extra Sugar"}
 		],
 		"ice":[
-		  {"name":"Regular Ice"},
-		  {"name":"Less Ice"},
 		  {"name":"No Ice"},
+		  {"name":"Less Ice"},
+		  {"name":"Regular Ice"},
 		  {"name":"Warm"}
 		],
 		"menu" : [
