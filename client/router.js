@@ -115,9 +115,9 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
       var startTime = new Date();
       var endTime = timestringToDate(target.when.value, new Date());
       console.log(endTime);
-      var id = Math.floor(Math.random()*10000);
+      var id = Orders.find().fetch().length;
       while(Orders.find({"room":id}).count() > 0){ // check to make sure duplicate room not created!
-        id = Math.floor(Math.random()*10000);
+        id +=1;
       }
       Session.set('roomId', id);
       console.log("Generated room with id " + id);
