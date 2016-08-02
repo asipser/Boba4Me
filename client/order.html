@@ -8,7 +8,7 @@
  	<div class="new-order-container">
 	  	<form class="new-order">
 	      <h3>Name</h3>
-	  	  <input type="text" name="name" placeholder="Name" /><br>
+	  	  <input type="text" name="name" placeholder="Name" required /><br>
 	  	  <h3>Drink</h3>
 	  	  <select class="drink-select">
 	  	  	{{#each category in menu}}
@@ -22,7 +22,7 @@
 	  	  <div >
 	  	    <h3>Size</h3>
 	  	  	{{#each size in sizes}}
-	  	  		<input id={{parseToID size.name}} type="radio" name="size" value={{valueNamePrice size}} />
+	  	  		<input id={{parseToID size.name}} type="radio" name="size" value={{valueNamePrice size}} required />
 	  	  		<label for={{parseToID size.name}} class="fake-btn size-btn">{{size.name}}<br>({{displayPrice size.price}})</label>
 	  	  	{{/each}}
 	  	  </div>
@@ -36,14 +36,14 @@
 	  	  <div>
 	  	    <h3>Sugar Level</h3>
 	  	  	{{#each sugar in sugars}}
-	  	  		<input id={{parseToID sugar.name}} type="radio" name="sugar" value={{sugar.name}} />
+	  	  		<input id={{parseToID sugar.name}} type="radio" name="sugar" value={{sugar.name}} required/>
 	  	  		<label for={{parseToID sugar.name}} class="fake-btn">{{sugar.name}}</label>
 	  	  	{{/each}}
 	  	  </div>
 	  	  <div>
 	  	    <h3>Ice Level</h3>
 	  	  	{{#each ice in ices}}
-	  	  		<input id={{parseToID ice.name}} type="radio" name="ice" value={{ice.name}} />
+	  	  		<input id={{parseToID ice.name}} type="radio" name="ice" value={{ice.name}} required/>
 	  	  		<label for={{parseToID ice.name}} class="fake-btn">{{ice.name}}</label>
 	  	  	{{/each}}
 	  	  </div>
