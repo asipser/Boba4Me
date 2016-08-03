@@ -4,6 +4,8 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { STORES, STORE_NAMES } from './stores.js';
+import toastr from 'toastr';
+
 const _STORES = STORES;
 const _STORE_NAMES = STORE_NAMES;
 // use as MONEY_FORMATTER.format(100)
@@ -15,7 +17,23 @@ const MONEY_FORMATTER = new Intl.NumberFormat('en-US', {
 Router.configure({
     layoutTemplate: 'mainLayout'
 });
-
+toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-bottom-center",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "1000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
 Router.route('/',function(){
   Session.set("joining", false);
   this.render("home");
@@ -325,6 +343,7 @@ Template.order.events({
     });
     console.log(orders_array);
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
+    toastr["success"]("Order Submitted!")
     Router.go("/postUserOrder/"+Session.get("roomId"));
   },
 
