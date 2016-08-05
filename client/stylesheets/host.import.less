@@ -1,0 +1,93 @@
+.host {
+	padding: 10px;
+	text-align: center;
+	background-color: @cl-tapioca;
+	color: white;
+	min-height: 100vh;
+	h1 {
+		margin-bottom: 0;
+		font-family: geomanist-bold;
+	}
+	p {
+		margin-top: 0;
+	}
+	table {
+		margin-left: auto;
+		margin-right: auto;
+		background-color: @cl-blue;
+		color: @cl-white;
+		border-collapse: collapse;
+		border-radius: 6px;
+		overflow: hidden;
+		tr th {
+			padding: 5px;
+		}
+		tr td{
+			padding: 3px;
+			background-color: @cl-lighterblue;
+			color: @cl-darkerblue;
+			font-family: geomanist-book;
+			border-bottom: 2px solid @cl-blue;
+
+			span.name {
+				font-family: geomanist-bold;
+				display: block;
+			}
+
+			span.drink {
+				display: block;
+				font-size: small;
+				text-align: left;
+			}
+			span.sugar, span.ice, span.toppings {
+				display: block;
+				width: 50%;
+				font-family: geomanist-medium;
+				color: @cl-blue;
+				font-size: smaller;
+				text-align: left;
+			}
+			span.sugar {
+				float: left;
+			}
+			span.ice {
+				float: right;
+			}
+			span.toppings {
+				width: 100%;
+			}
+
+			input[type="checkbox"] {
+				visibility: hidden;
+				position: absolute;
+			}
+
+			label {
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				width: 20px;
+				height: 20px;
+				background-color: @cl-darkerblue;
+				vertical-align: middle;
+				color: @cl-white;
+			}
+
+			label:hover {
+				cursor: pointer;
+			}
+
+			.cancel {
+				background-color: rgba(0,0,0,0);
+				color: @cl-darkerblue;
+				border: 0;
+				font-size: 150%;
+			}
+
+			.cancel:hover {
+				color: @cl-blue;
+				cursor: pointer;
+			}
+		}
+	}
+}

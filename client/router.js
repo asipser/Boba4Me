@@ -168,6 +168,20 @@ Template.order_entry.onCreated(function(){
   this.id = this.data.order_id;
 });
 
+Template.order_entry.helpers({
+  sizeAbbreviation(size) {
+    return size[0];
+  },
+
+  toppingsText(toppings) {
+    return toppings.join(", ");
+  },
+
+  parseToID(name, drink) {
+    return (name+drink).replace(/\s/g, "X");
+  }
+})
+
 Template.order_entry.events({
   'click .cancel'(event){
     event.preventDefault();
@@ -183,14 +197,15 @@ Template.order_entry.events({
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
   },
   'click .fade'(event){
-    event.preventDefault();
     temp = Template.instance().firstNode;
-    console.log(temp.style.opacity);
-    if(temp.style.opacity <1){
+    $label = $("label[for='"+$(event.target).attr('id')+"']");
+    if(!event.target.checked){
       temp.style.opacity = 1;
+      $label.html("");
     }
     else{
       temp.style.opacity =.5;
+      $label.html("<i class='icon ion-checkmark'></i>");
     }
   }
 });
