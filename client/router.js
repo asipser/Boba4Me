@@ -61,7 +61,16 @@ Router.route('/host/:_id',{
     var room_id = params._id;
     room_id = parseInt(room_id);
     Session.set("roomId",room_id);
-
+    order = Orders.find({"room":room_id}).fetch()[0];
+    if(order.secretWord != "" && Session.get("secretWord") === undefined){
+      var word = prompt("Please enter in the secret word:");
+      if(word != order.secretWord){
+        toastr["error"]("Wrong word!");
+        Router.go("/");
+      }
+      else
+        Session.set("secretWord",word);
+    }
     this.render('host', {
         data: function () {
           var order = Orders.find({"room":room_id}).fetch()[0];
@@ -89,9 +98,11 @@ Router.route('/:_id',{
     var params = this.params; 
     target_id = parseInt(params._id);
     if(Orders.find({"room":target_id}).count() <= 0){
+      toastr["error"]("Wrong room #!");
       Router.go('/');
     }
     else if(Orders.find({"room":target_id}).fetch()[0].completed){
+      toastr["info"]("Order has ended. Moving to recipet page");
       Router.go("/postUserOrder/" + target_id);
     }
     else
@@ -138,6 +149,7 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
         id +=1;
       }
       Session.set('roomId', id);
+      Session.set("secretWord",secretWord);
       console.log("Generated room with id " + id);
       Orders.insert({
         room:id,
@@ -219,9 +231,10 @@ Template.order.onCreated(function(){
   _STORES[this.data.store].toppings.forEach(function(item) {
     t[item.name] = false;
   })
+  t["Bubbles"]=true;
   this.selectedToppings = new ReactiveVar(t);
-  this.selectedSize = new ReactiveVar('-$0');
-  this.price = new ReactiveVar(0);
+  this.selectedSize = new ReactiveVar('Medium$3.50');
+  this.price = new ReactiveVar(3.5);
   $(window).resize(function() {
     var dim = Math.max($(".new-order").width(), $(".new-order").height());
     $(".background-circle.order-circle-1").width(dim);
@@ -236,6 +249,11 @@ Template.order.onDestroyed(function() {
 
 Template.order.onRendered(function() {
     var dim = Math.max($(".new-order").width(), $(".new-order").height());
+    $("#RegularXIce")[0].checked=true;
+    $("#RegularXSugar")[0].checked=true;
+    $("#Bubbles")[0].checked=true;
+    $("#Medium")[0].checked=true;
+
     $(".background-circle.order-circle-1").width(dim);
     $(".background-circle.order-circle-1").height(dim);
     $(".background-circle.order-circle-1").css("margin-left", -dim/2);
