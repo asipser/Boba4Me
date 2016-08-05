@@ -248,8 +248,8 @@ Template.order.onCreated(function(){
   })
   t["Bubbles"]=true;
   this.selectedToppings = new ReactiveVar(t);
-  this.selectedSize = new ReactiveVar('Medium$3.50');
-  this.price = new ReactiveVar(3.5);
+  this.selectedSize = new ReactiveVar('Medium$3.00');
+  this.price = new ReactiveVar(3.0);
   $(window).resize(function() {
     var dim = Math.max($(".new-order").width(), $(".new-order").height());
     $(".background-circle.order-circle-1").width(dim);
