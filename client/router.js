@@ -62,14 +62,14 @@ Router.route('/host/:_id',{
     room_id = parseInt(room_id);
     Session.set("roomId",room_id);
     order = Orders.find({"room":room_id}).fetch()[0];
-    if(order.secretWord != "" && Session.get("secretWord") === undefined){
+    if(order.secretWord != "" && Session.get("secretWord") != order.secretWord){
       var word = prompt("Please enter in the secret word:");
       if(word != order.secretWord){
         toastr["error"]("Wrong word!");
         Router.go("/");
       }
       else
-        Session.set("secretWord",word);
+        Session.setPersistent("secretWord", word)
     }
     this.render('host', {
         data: function () {
@@ -97,6 +97,7 @@ Router.route('/:_id',{
   onBeforeAction: function () { // checks if order has run out of time (if it does it immediately ports to postUserOrder screen!)
     var params = this.params; 
     target_id = parseInt(params._id);
+    Session.set("roomId",target_id);
     if(Orders.find({"room":target_id}).count() <= 0){
       toastr["error"]("Wrong room #!");
       Router.go('/');
@@ -126,7 +127,8 @@ Router.route('/:_id',{
                 ordersLeft: ordersLeft > 0,
                 storeNames: _STORE_NAMES,
                 stores: _STORES,
-                store: order.place
+                store: order.place,
+                editing:Session.get("editing")
               }
       }
     });
@@ -149,7 +151,7 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
         id +=1;
       }
       Session.set('roomId', id);
-      Session.set("secretWord",secretWord);
+      Session.setPersistent("secretWord", secretWord);
       console.log("Generated room with id " + id);
       Orders.insert({
         room:id,
@@ -178,7 +180,13 @@ Template.newHost.onRendered(function() {
 
 Template.order_entry.onCreated(function(){
   this.id = this.data.order_id;
+  console.log(this);
 });
+
+Template.user_order_entry.onCreated(function(){
+  this.id = this.data.order_id;
+});
+
 
 Template.order_entry.helpers({
   sizeAbbreviation(size) {
@@ -191,8 +199,32 @@ Template.order_entry.helpers({
 
   parseToID(name, drink) {
     return (name+drink).replace(/\s/g, "X");
-  }
+  },
+  status: function() {
+    console.log(this);
+    var status = this.changed;
+    if(status){
+      var input_id = this.name + this.drink;
+      input_id = input_id.replace(/\s/g, "X");
+      var input = $('#'+input_id)[0];
+      if(input){
+        console.log(input.checked);
+        input.checked = false;
+        $label = $("label[for='"+input_id+"']");
+        Template.instance().firstNode.style.opacity = 1;
+        $label.html("");
+      toastr["warning"](this.name + " has changed their order!")
+      return "changed";
+      }
+    }
+    else
+      return "default";
+  },
+
+
 })
+
+Template.user_order_entry.inheritsHelpersFrom("order_entry");
 
 Template.order_entry.events({
   'click .cancel'(event){
@@ -207,10 +239,36 @@ Template.order_entry.events({
         orders_array.splice(i,1);
     }
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
+    console.log(Orders.find({"room":Session.get("roomId")}).fetch()[0]);
+  },
+  'click .edit'(event){
+    var order_id = Template.instance().id;
+    var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id); // gets database ID needed for $set
+    var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);    
+    var user_order;
+    var user_order_index=0;
+    console.log(orders_array);
+    for(var i=0; i<orders_array.length;i++){
+      if(orders_array[i].order_id == order_id){
+        user_order=orders_array[i];
+        user_order_index=i;
+      }
+    }
+    Session.set("order_id", order_id);// used for when in the modify mode of /order it can see which order it is changing
+    Session.set("drink",user_order['drink']);
+    Session.set("name",user_order['name']);
+    Session.set("size",user_order['size']);
+    Session.set("toppings",user_order['toppings']);
+    Session.set("sugar",user_order['sugar']);
+    Session.set("price",user_order['price']);
+    Session.set("editing",true);
+    Router.go("/"+Session.get("roomId"));
   },
   'click .fade'(event){
-    temp = Template.instance().firstNode;
+    var temp = Template.instance().firstNode;
+    var order_id = (Template.instance().id);
     $label = $("label[for='"+$(event.target).attr('id')+"']");
+    console.log(event.target.checked);
     if(!event.target.checked){
       temp.style.opacity = 1;
       $label.html("");
@@ -218,9 +276,18 @@ Template.order_entry.events({
     else{
       temp.style.opacity =.5;
       $label.html("<i class='icon ion-checkmark'></i>");
+      var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
+      var orders = (Orders.find({"room":Session.get("roomId")}).fetch()[0].orders);
+      for(var i=0;i<orders.length;i++){
+        if(orders[i]['order_id'] == order_id)
+          orders[i]['changed'] = false;
+      }
+      console.log(orders);
+      Orders.update({"_id":room_id},{$set:{"orders":orders}});
     }
   }
 });
+Template.user_order_entry.inheritsEventsFrom("order_entry");
 
 Template.host.events({
   'submit .host-modify-room'(event){
@@ -242,14 +309,35 @@ Template.host.events({
 Template.order.onCreated(function(){ 
   this.selectedDrink = new ReactiveVar(_STORES[this.data.store].menu[0].items[0].name);
   this.selectedCategoryIndex = new ReactiveVar(0);
+  var categoryIndex =0;
   var t = {};
+  var selectedSize = "Medium$3.00";
+  var price = 3.0;
   _STORES[this.data.store].toppings.forEach(function(item) {
     t[item.name] = false;
   })
   t["Bubbles"]=true;
+  if(Session.get("editing")){
+    for(var i=0;i<Session.get("toppings").length;i++){
+     t[Session.get("toppings")[i]]=true;
+    }
+    price = Session.get("price")-.5*Session.get("toppings").length;
+    selectedSize=Session.get("size") + '$' + price;
+    this.selectedDrink.set(Session.get("drink"));
+    var categories = _STORES[this.data.store].menu.map(function(obj){return {name:obj.name,items:obj.items.map(function(obj_ele){return obj_ele.name})}});
+    for(var i=0;i<categories.length;i++){
+      for(var j=0;j<categories[i]['items'].length;j++){
+        if(Session.get('drink') == categories[i]['items'][j]){
+          categoryIndex=i;
+        }
+      }
+    }
+    this.selectedCategoryIndex.set(categoryIndex);
+  }
   this.selectedToppings = new ReactiveVar(t);
-  this.selectedSize = new ReactiveVar('Medium$3.00');
-  this.price = new ReactiveVar(3.0);
+  this.selectedSize = new ReactiveVar(selectedSize);
+  console.log(price);
+  this.price = new ReactiveVar(price);
   $(window).resize(function() {
     var dim = Math.max($(".new-order").width(), $(".new-order").height());
     $(".background-circle.order-circle-1").width(dim);
@@ -264,10 +352,20 @@ Template.order.onDestroyed(function() {
 
 Template.order.onRendered(function() {
     var dim = Math.max($(".new-order").width(), $(".new-order").height());
-    $("#RegularXIce")[0].checked=true;
-    $("#RegularXSugar")[0].checked=true;
-    $("#Bubbles")[0].checked=true;
-    $("#Medium")[0].checked=true;
+
+    $("#"+(Session.get("size")||"Medium"))[0].checked=true;
+    $("#"+(Session.get("sugar") || "Regular Sugar").replace(" ", "X"))[0].checked=true;
+    $("#"+(Session.get("ice")|| "Regular Ice").replace(" ", "X"))[0].checked=true;
+
+    if(Session.get("editing")){
+      for(var i=0;i<Session.get("toppings").length;i++){
+        $("#"+Session.get("toppings")[i].replace(" ", "X"))[0].checked=true;
+      }
+      $("#name_entry")[0].value = Session.get("name");
+      $(".drink-select")[0].value=Session.get("drink");
+    }
+    else
+      $("#Bubbles")[0].checked=true;
 
     $(".background-circle.order-circle-1").width(dim);
     $(".background-circle.order-circle-1").height(dim);
@@ -317,6 +415,7 @@ Template.order.helpers({
     const categoryIndex = Template.instance().selectedCategoryIndex.get();
     const drink = Template.instance().selectedDrink.get();
     const drinkIndex = _STORES[store].menu[categoryIndex].items.findIndex(function(element){return element.name == drink});
+    console.log("store" + store + " catefory index: " + categoryIndex + " drink: " + drink + " index: " + drinkIndex);
     return _STORES[store].menu[categoryIndex].items[drinkIndex].sizes;
   },
 
@@ -345,6 +444,12 @@ Template.order.helpers({
   }
 })
 
+Template.postUserOrder.events({
+  'click #add-order'(event){
+    Router.go('/'+Session.get("roomId"));
+  }
+});
+
 Template.order.events({
   'submit .new-order'(event, template) {
     event.preventDefault();
@@ -359,31 +464,53 @@ Template.order.events({
     const sugar = event.target.sugar.value;
     const ice = event.target.ice.value;
     const price = template.price.get();
-
-    Session.set("total_owed",(Session.get("total_owed") || 0) + parseFloat(price));
-
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);
-    orders_array.push({
-      name: name, 
-      drink: drink,
-      size: size,
-      toppings: toppings,
-      sugar: sugar,
-      ice: ice,
-      price: price, 
-      order_id:guid()
-    });
-    console.log(orders_array);
-    Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
-    toastr["success"]("Order Submitted!")
-    Router.go("/postUserOrder/"+Session.get("roomId"));
+    if(event.target.modify){
+      for(var i=0; i<orders_array.length;i++){
+        if(orders_array[i]['order_id'] == Session.get("order_id")){
+          user_order=orders_array[i];
+          console.log(user_order);
+          user_order['name']=name;
+          user_order['drink']=drink;
+          user_order['size']=size;
+          user_order['toppings']=toppings;
+          user_order['sugar']=sugar;
+          user_order['price']=price;
+          user_order['changed']=true;
+        }
+      }
+      Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
+      toastr["info"]("Order Modified!")
+      Session.set("editing",false);
+      Router.go("/postUserOrder/"+Session.get("roomId"));    
+    }
+    else{
+      if(Session.get("orderer_id") === undefined)
+        Session.setPersistent("orderer_id",guid());
+      orders_array.push({
+        name: name, 
+        drink: drink,
+        size: size,
+        toppings: toppings,
+        sugar: sugar,
+        ice: ice,
+        price: price, 
+        order_id:guid(),
+        orderer_id:Session.get("orderer_id"),
+        changed:false // used for when user clicks modify in postUserOrder. Host will then be able to seee modified orders.
+      });
+      console.log(orders_array);
+      Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
+      toastr["success"]("Order Submitted!")
+      Router.go("/postUserOrder/"+Session.get("roomId"));
+    }
   },
-
   'change .drink-select' (event, template) {
     template.selectedDrink.set(event.target.value);
     const store = this.store;
     const drink = event.target.value;
+    console.log(event.target);
     const categories = _STORES[store].menu.map(function(obj){return obj.name});
     const selectedCategory = event.target.selectedOptions[0].parentElement.label;
     const categoryIndex = categories.indexOf(selectedCategory);
@@ -443,6 +570,7 @@ Router.route('postUserOrder/:_id',{
   action: function () {
     var params = this.params; 
     target_id = params._id;
+    Session.set("roomId",parseInt(target_id));
     var order = Orders.find({"room":parseInt(target_id)}).fetch()[0];
     //Session.set("t",getTimeRemaining(order.endTime));
     timeinterval = setInterval(function () {
@@ -451,6 +579,13 @@ Router.route('postUserOrder/:_id',{
     }, 100);
     Session.set("t",getTimeRemaining(Orders,order.endTime));
     var time = Session.get("t");
+    var orders = order.orders;
+    var user_orders = [];
+    for(var i=0;i<orders.length;i++){
+      if(orders[i]['orderer_id'] == Session.get("orderer_id")){
+        user_orders.push(orders[i]);
+      }
+    }
     this.render('postUserOrder', {
         data: function (){
           return {
@@ -458,7 +593,8 @@ Router.route('postUserOrder/:_id',{
                   minutes:time.minutes,
                   seconds:time.seconds,
                   ended:time.total <=0,
-                  total:time.total
+                  total:time.total,
+                  orders:user_orders
                 }
         }
     });

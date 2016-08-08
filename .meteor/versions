@@ -1,4 +1,6 @@
+aldeed:template-extension@4.0.0
 allow-deny@1.0.5
+amplify@1.0.0
 autoupdate@1.2.10
 babel-compiler@6.8.3
 babel-runtime@0.1.9_1
@@ -74,6 +76,7 @@ standard-minifier-js@1.0.7_1
 templating@1.1.12_1
 templating-tools@1.0.4
 tracker@1.0.14
+u2622:persistent-session@0.4.4
 ui@1.0.11
 underscore@1.0.9
 url@1.0.10

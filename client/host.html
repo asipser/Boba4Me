@@ -30,7 +30,7 @@
 <template name="order_entry">
  <tr class = "order-container">
   <td> <input class="fade" type="checkbox" id={{parseToID name drink}}><label for={{parseToID name drink}}></label></td>
-  <td><span class="name">{{name}}</span>(${{price}})</td>
+  <td><span class="name {{status}}">{{name}}</span>(${{price}})</td>
   <td><span class="drink">{{drink}} (<span class="size">{{sizeAbbreviation size}}</span>)</span><span class="sugar">{{sugar}}</span><span class="ice">{{ice}}</span><br>
     <span class="toppings">+{{toppingsText toppings}}</span>
   </td>

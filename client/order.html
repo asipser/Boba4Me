@@ -8,7 +8,7 @@
  	<div class="new-order-container">
 	  	<form class="new-order">
 	      <h3>Name</h3>
-	  	  <input type="text" name="name" placeholder="Name" required /><br>
+	  	  <input type="text" id = "name_entry" name="name" placeholder="Name" required /><br>
 	  	  <h3>Drink</h3>
 	  	  <select class="drink-select">
 	  	  	{{#each category in menu}}
@@ -50,7 +50,11 @@
 	  	  <div>
 	  	  	<h3>Total: {{displayPrice price}}</h3>
 	  	  </div>
-	      <button class = "submit-order" type = "submit"> Submit.</button>
+				{{#if editing}}
+	      <button name = "modify" class = "modify-order" type = "submit"> Modify Order.</button>
+	      {{else}}
+	      <button name = "add" class = "submit-order" type = "submit"> Submit Order.</button>
+	      {{/if}}
 	  </form>
   </div>
   {{else}}
