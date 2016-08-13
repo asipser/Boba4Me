@@ -179,12 +179,12 @@ Template.newHost.onRendered(function() {
 
 
 Template.order_entry.onCreated(function(){
-  this.id = this.data.order_id;
+  this.id = new ReactiveVar(this.data.order_id);
   console.log(this);
 });
 
 Template.user_order_entry.onCreated(function(){
-  this.id = this.data.order_id;
+  this.id = new ReactiveVar(this.data.order_id);
 });
 
 
@@ -227,22 +227,28 @@ Template.order_entry.helpers({
 Template.user_order_entry.inheritsHelpersFrom("order_entry");
 
 Template.order_entry.events({
-  'click .cancel'(event){
+  'click .cancel'(event,temp){
     event.preventDefault();
-    var order_id = Template.instance().id;
+    //console.log(temp);
+    var order_id = temp.id.get();
+    console.log(order_id);
+    //console.log(order_id);
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id); // gets database ID needed for $set
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);
-
-    var i = orders_array.indexOf("b");
     for(var i=0; i<orders_array.length;i++){
-      if(orders_array[i].order_id == order_id)
+      if(orders_array[i].order_id == order_id){
+        if(i != orders_array.length-1)
+          temp.id.set(orders_array[i+1].order_id);
         orders_array.splice(i,1);
+      }
     }
+    //console.log(orders_array);
     Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
-    console.log(Orders.find({"room":Session.get("roomId")}).fetch()[0]);
+    //console.log(Orders.find({"room":Session.get("roomId")}).fetch()[0]);
+
   },
   'click .edit'(event){
-    var order_id = Template.instance().id;
+    var order_id = Template.instance().id.get();
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id); // gets database ID needed for $set
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);    
     var user_order;
@@ -266,7 +272,7 @@ Template.order_entry.events({
   },
   'click .fade'(event){
     var temp = Template.instance().firstNode;
-    var order_id = (Template.instance().id);
+    var order_id = (Template.instance().id.get());
     $label = $("label[for='"+$(event.target).attr('id')+"']");
     console.log(event.target.checked);
     if(!event.target.checked){
@@ -601,59 +607,59 @@ Router.route('postUserOrder/:_id',{
   }
 });
 
-Template.milkteaBG.helpers({
-  milktea(hours, minutes, seconds, total) {
-    const AMPLITUDE = 20;
-    const width = window.innerWidth;
-    var height = window.innerHeight;
-    const h = parseInt(hours);
-    const m = parseInt(minutes);
-    const s = parseInt(seconds);
-    if (!(h > 0 || h > 15)) {
-      height *= (m*60+s)/(60*15); // 15 minutes
-    }
-    const BASELINE = height - AMPLITUDE;
-    //const xoffset = Session.get("sineCounter");
-    const xoffset = total/10;
-    pointList = [[0, height].join(",")];
-    for (var i = 0; i <= width ; i++) {
-      var xval = i + xoffset;
-      pointList.push([i, height-(BASELINE + AMPLITUDE * Math.sin(6.28 * xval / width))].join(","));
-    }
-    pointList.push([width, height].join(","));
-    pointList.push([0, height].join(","));
-    //Session.set("sineCounter", xoffset+0.1);
-    return pointList.join(" ");
-  },
+// Template.milkteaBG.helpers({
+//   milktea(hours, minutes, seconds, total) {
+//     const AMPLITUDE = 20;
+//     const width = window.innerWidth;
+//     var height = window.innerHeight;
+//     const h = parseInt(hours);
+//     const m = parseInt(minutes);
+//     const s = parseInt(seconds);
+//     if (!(h > 0 || h > 15)) {
+//       height *= (m*60+s)/(60*15); // 15 minutes
+//     }
+//     const BASELINE = height - AMPLITUDE;
+//     //const xoffset = Session.get("sineCounter");
+//     const xoffset = total/10;
+//     pointList = [[0, height].join(",")];
+//     for (var i = 0; i <= width ; i++) {
+//       var xval = i + xoffset;
+//       pointList.push([i, height-(BASELINE + AMPLITUDE * Math.sin(6.28 * xval / width))].join(","));
+//     }
+//     pointList.push([width, height].join(","));
+//     pointList.push([0, height].join(","));
+//     //Session.set("sineCounter", xoffset+0.1);
+//     return pointList.join(" ");
+//   },
 
-  yOffset(hours, minutes, seconds) {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const h = parseInt(hours);
-    const m = parseInt(minutes);
-    const s = parseInt(seconds);
-    var pointList = [[0,0].join(",")];
-    if ((h > 0 || h > 15)) {
-      return 0;
-    } else {
-      return height - (height * (m*60+s)/(60*15));
-    }
-  }, 
+//   yOffset(hours, minutes, seconds) {
+//     const width = window.innerWidth;
+//     const height = window.innerHeight;
+//     const h = parseInt(hours);
+//     const m = parseInt(minutes);
+//     const s = parseInt(seconds);
+//     var pointList = [[0,0].join(",")];
+//     if ((h > 0 || h > 15)) {
+//       return 0;
+//     } else {
+//       return height - (height * (m*60+s)/(60*15));
+//     }
+//   }, 
 
-  straw() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const STRAW_RADIUS = 50;
-    var pointList = [
-      [width*5/8 - STRAW_RADIUS, 0].join(","),
-      [width*5/8 + STRAW_RADIUS, 0].join(","),
-      [width*3/8 + STRAW_RADIUS, height].join(","),
-      [width*3/8 - STRAW_RADIUS, height].join(","),
-      [width*5/8 - STRAW_RADIUS, 0].join(",")
-    ];
-    return pointList.join(" ");
-  }
-});
+//   straw() {
+//     const width = window.innerWidth;
+//     const height = window.innerHeight;
+//     const STRAW_RADIUS = 50;
+//     var pointList = [
+//       [width*5/8 - STRAW_RADIUS, 0].join(","),
+//       [width*5/8 + STRAW_RADIUS, 0].join(","),
+//       [width*3/8 + STRAW_RADIUS, height].join(","),
+//       [width*3/8 - STRAW_RADIUS, height].join(","),
+//       [width*5/8 - STRAW_RADIUS, 0].join(",")
+//     ];
+//     return pointList.join(" ");
+//   }
+// });
 
 function getTimeRemaining(Orders,endtime){
   var curr_date = new Date();
