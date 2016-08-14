@@ -8,6 +8,7 @@ import toastr from 'toastr';
 
 const _STORES = STORES;
 const _STORE_NAMES = STORE_NAMES;
+var timeinterval;
 // use as MONEY_FORMATTER.format(100)
 const MONEY_FORMATTER = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -266,6 +267,7 @@ Template.order_entry.events({
     Session.set("size",user_order['size']);
     Session.set("toppings",user_order['toppings']);
     Session.set("sugar",user_order['sugar']);
+    Session.set("ice",user_order['ice']);
     Session.set("price",user_order['price']);
     Session.set("editing",true);
     Router.go("/"+Session.get("roomId"));
@@ -361,7 +363,7 @@ Template.order.onRendered(function() {
 
     $("#"+(Session.get("size")||"Medium"))[0].checked=true;
     $("#"+(Session.get("sugar") || "Regular Sugar").replace(" ", "X"))[0].checked=true;
-    $("#"+(Session.get("ice")|| "Regular Ice").replace(" ", "X"))[0].checked=true;
+    $("#"+(Session.get("ice") || "Regular Ice").replace(" ", "X"))[0].checked=true;
 
     if(Session.get("editing")){
       for(var i=0;i<Session.get("toppings").length;i++){
@@ -483,6 +485,7 @@ Template.order.events({
           user_order['toppings']=toppings;
           user_order['sugar']=sugar;
           user_order['price']=price;
+          user_order['ice']=ice;
           user_order['changed']=true;
         }
       }
@@ -566,6 +569,18 @@ Template.home.helpers({
     return Session.get("joining");
   }
 });
+Template.postUserOrder.onCreated(function(){
+    console.log("roomId: " + Session.get("roomId"));
+    var order_endtime = Orders.find({"room":parseInt(target_id)}).fetch()[0].endTime;
+    if(!timeinterval){
+      timeinterval = setInterval(function () {
+        var t = getTimeRemaining(order_endtime);
+        Session.set("t", t);
+      }, 1000);
+    }
+    else
+      console.log("Countdown already in progress");
+});
 
 Router.route('postUserOrder/:_id',{
   loadingTemplate: 'loading',
@@ -578,13 +593,8 @@ Router.route('postUserOrder/:_id',{
     target_id = params._id;
     Session.set("roomId",parseInt(target_id));
     var order = Orders.find({"room":parseInt(target_id)}).fetch()[0];
-    //Session.set("t",getTimeRemaining(order.endTime));
-    timeinterval = setInterval(function () {
-      var t = getTimeRemaining(Orders,order.endTime);
-      Session.set("t", t);
-    }, 100);
-    Session.set("t",getTimeRemaining(Orders,order.endTime));
-    var time = Session.get("t");
+    if(Session.get("t") === undefined)
+      Session.set("t",getTimeRemaining(order.endTime));
     var orders = order.orders;
     var user_orders = [];
     for(var i=0;i<orders.length;i++){
@@ -595,11 +605,11 @@ Router.route('postUserOrder/:_id',{
     this.render('postUserOrder', {
         data: function (){
           return {
-                  hours:time.hours,
-                  minutes:time.minutes,
-                  seconds:time.seconds,
-                  ended:time.total <=0,
-                  total:time.total,
+                  hours:Session.get("t").hours,
+                  minutes:Session.get("t").minutes,
+                  seconds:Session.get("t").seconds,
+                  ended:Session.get("t").total <=0,
+                  total:Session.get("t").total,
                   orders:user_orders
                 }
         }
@@ -661,14 +671,13 @@ Router.route('postUserOrder/:_id',{
 //   }
 // });
 
-function getTimeRemaining(Orders,endtime){
+function getTimeRemaining(endtime){
   var curr_date = new Date();
   var t = endtime.getTime() - curr_date.getTime();
   var seconds = ("0" + Math.floor( (t/1000) % 60 )).slice(-2);
   var minutes = ("0" + Math.floor( (t/1000/60) % 60 )).slice(-2);
   var hours = ("0" + Math.floor( (t/(1000*60*60)) % 24 )).slice(-2);
   var days = Math.floor( t/(1000*60*60*24) );
-
   if(t <= 0){
     clearInterval(timeinterval);
     var order_id = (Orders.find({"endTime":endtime}).fetch()[0]._id);
@@ -682,7 +691,6 @@ function getTimeRemaining(Orders,endtime){
     'minutes': minutes,
     'seconds': seconds
   };
-
 }
 
 // outputs string like "15:25"
