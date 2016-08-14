@@ -221,6 +221,14 @@ Template.order_entry.helpers({
     else
       return "default";
   },
+  updatedPrice(price){
+    var parentData= Template.parentData()
+    var tip = parentData.tip;
+    var delivery = parentData.delivery;
+    var length = parentData.num_orders;
+    
+    return +((price * 1.065) + (price * (tip||0)) + ((delivery||0)/length)).toFixed(2)
+  },
 
 
 })
@@ -610,7 +618,10 @@ Router.route('postUserOrder/:_id',{
                   seconds:Session.get("t").seconds,
                   ended:Session.get("t").total <=0,
                   total:Session.get("t").total,
-                  orders:user_orders
+                  orders:user_orders,
+                  num_orders:orders.length,
+                  tip:orders.tip,
+                  delivery:orders.delivery
                 }
         }
     });

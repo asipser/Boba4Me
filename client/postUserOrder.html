@@ -12,9 +12,9 @@
   <table>
     <thead>
       <tr>
-        <th>Cart</th>
         <th>Name</th>
         <th>Order</th>
+        <th>Price (w. tax/tip/delivery)</th>
         <th></th>
       </tr>
     </thead>
@@ -32,10 +32,11 @@
 
 <template name="user_order_entry">
  <tr class = "order-container">
-  <td><span class="name">{{name}}</span>(${{price}})</td>
+  <td><span class="name">{{name}}</span></td>
   <td><span class="drink">{{drink}} (<span class="size">{{sizeAbbreviation size}}</span>)</span><span class="sugar">{{sugar}}</span><span class="ice">{{ice}}</span><br>
     <span class="toppings">+{{toppingsText toppings}}</span>
   </td>
+  <td>${{price}} (${{updatedPrice price}})</td>
      <td><button class = "cancel" type = "button"><i class="icon ion-trash-a"></i></button></td>
   <td><button class = "edit" type = "button">Modify Order</button></td>
   </tr>
