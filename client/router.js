@@ -37,6 +37,7 @@ toastr.options = {
 }
 Router.route('/',function(){
   Session.set("joining", false);
+  Session.set("editing",false); // needed incase in modify screen user changes url to another page
   this.render("home");
 });
 
@@ -202,7 +203,7 @@ Template.order_entry.helpers({
     return (name+drink).replace(/\s/g, "X");
   },
   status: function() {
-    console.log(this);
+    console.log(this.changed);
     var status = this.changed;
     if(status){
       var input_id = this.name + this.drink;
@@ -215,18 +216,27 @@ Template.order_entry.helpers({
         Template.instance().firstNode.style.opacity = 1;
         $label.html("");
       toastr["warning"](this.name + " has changed their order!")
-      return "changed";
       }
+      return "changed";
     }
     else
       return "default";
   },
+  changed:function(item){
+    var changed = this.changed_items[item];
+    if(changed)
+      return "changed";
+    else
+      return "default";
+  },
+
+
   updatedPrice(price){
     var parentData= Template.parentData()
     var tip = parentData.tip;
     var delivery = parentData.delivery;
     var length = parentData.num_orders;
-    
+
     return +((price * 1.065) + (price * (tip||0)) + ((delivery||0)/length)).toFixed(2)
   },
 
@@ -297,6 +307,7 @@ Template.order_entry.events({
       for(var i=0;i<orders.length;i++){
         if(orders[i]['order_id'] == order_id)
           orders[i]['changed'] = false;
+          orders[i]['changed_items'] = {};
       }
       console.log(orders);
       Orders.update({"_id":room_id},{$set:{"orders":orders}});
@@ -480,6 +491,21 @@ Template.order.events({
     const sugar = event.target.sugar.value;
     const ice = event.target.ice.value;
     const price = template.price.get();
+    var changed_items = {};
+    if(name != Session.get("name"))
+      changed_items.name = true;
+    if(drink != Session.get("drink"))
+      changed_items.drink = true;
+    if(JSON.stringify(toppings) != JSON.stringify(Session.get("toppings")))
+      changed_items.toppings = true;
+    if(size != Session.get("size"))
+      changed_items.size = true;
+    if(sugar != Session.get("sugar"))
+      changed_items.sugar = true;
+    if(ice != Session.get("ice"))
+      changed_items.ice = true;
+    console.log("changed items");
+    console.log(changed_items);
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     var orders_array = (Orders.find({"_id":room_id}).fetch()[0].orders);
     if(event.target.modify){
@@ -495,6 +521,7 @@ Template.order.events({
           user_order['price']=price;
           user_order['ice']=ice;
           user_order['changed']=true;
+          user_order['changed_items']=changed_items;
         }
       }
       Orders.update({"_id":room_id},{$set:{"orders":orders_array}});
@@ -515,7 +542,8 @@ Template.order.events({
         price: price, 
         order_id:guid(),
         orderer_id:Session.get("orderer_id"),
-        changed:false // used for when user clicks modify in postUserOrder. Host will then be able to seee modified orders.
+        changed:false, // used for when user clicks modify in postUserOrder. Host will then be able to seee modified orders.
+        changed_items:{}
       });
       console.log(orders_array);
       Orders.update({"_id":room_id},{$set:{"orders":orders_array}});

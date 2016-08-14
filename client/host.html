@@ -30,9 +30,9 @@
 <template name="order_entry">
  <tr class = "order-container">
   <td> <input class="fade" type="checkbox" id={{parseToID name drink}}><label for={{parseToID name drink}}></label></td>
-  <td><span class="name {{status}}">{{name}}</span>(${{price}})</td>
-  <td><span class="drink">{{drink}} (<span class="size">{{sizeAbbreviation size}}</span>)</span><span class="sugar">{{sugar}}</span><span class="ice">{{ice}}</span><br>
-    <span class="toppings">+{{toppingsText toppings}}</span>
+  <td><span class="name {{status}}">{{name}}</span> (${{price}})</td>
+  <td><span class="drink {{changed "drink"}}">{{drink}} (<span class="size  {{changed "size"}}">{{sizeAbbreviation size}}</span>)</span><span class="sugar  {{changed "sugar"}}">{{sugar}}</span><span class="ice  {{changed "ice"}}">{{ice}}</span><br>
+    <span class="toppings  {{changed "toppings"}}">+{{toppingsText toppings}}</span>
   </td>
      <td><button class = "cancel" type = "button"><i class="icon ion-trash-a"></i></button></td>
   </tr>
