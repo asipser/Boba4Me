@@ -330,7 +330,20 @@ Template.host.events({
     // target.tip.disabled = true;
     //hide button somehow?
 
+  },
+  'click .end-order'(event){
+    //toastr['success']('Event Closed!');
+    console.log('hello');
+    var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
+    Orders.update({"_id":room_id},{$set:{"endTime":new Date(),"completed":true}});   
+  },
+  'click .extend-order'(event){
+
+    var order = (Orders.find({"room":Session.get("roomId")}).fetch()[0]);
+    toastr['success']('Added 5 Minutes to time left!');
+    Orders.update({"_id":order._id},{$set:{"endTime":new Date(order.endTime.getTime() + 5*60000),"completed":false}});   
   }
+
 });
 
 Template.order.onCreated(function(){ 
@@ -607,9 +620,9 @@ Template.home.helpers({
 });
 Template.postUserOrder.onCreated(function(){
     console.log("roomId: " + Session.get("roomId"));
-    var order_endtime = Orders.find({"room":parseInt(target_id)}).fetch()[0].endTime;
     if(!timeinterval){
       timeinterval = setInterval(function () {
+        var order_endtime = Orders.find({"room":parseInt(target_id)}).fetch()[0].endTime;
         var t = getTimeRemaining(order_endtime);
         Session.set("t", t);
       }, 1000);
@@ -718,7 +731,7 @@ function getTimeRemaining(endtime){
   var hours = ("0" + Math.floor( (t/(1000*60*60)) % 24 )).slice(-2);
   var days = Math.floor( t/(1000*60*60*24) );
   if(t <= 0){
-    clearInterval(timeinterval);
+    //clearInterval(timeinterval);
     var order_id = (Orders.find({"endTime":endtime}).fetch()[0]._id);
     Orders.update({"_id":order_id},{$set:{"completed":true}});
   }
