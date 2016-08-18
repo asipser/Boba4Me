@@ -11,6 +11,73 @@
 	p {
 		margin-top: 0;
 	}
+
+	.container-for-sizing {
+		display: inline-block;
+	}
+
+	.host-modify-room {
+		text-align: right;
+		margin-top: -10px;
+
+		label {
+			font-family: geomanist-bold;
+			display: block;
+			text-align: right;
+			width: 100%;
+		}
+
+		input[type="text"] {
+			border-radius: 6px;
+			border: 2px solid @cl-blue;
+			font-family: geomanist-regular;
+			padding: 10px;
+			width: 75px;
+			margin-top: 10px;
+		}
+
+		h3.total-amount {
+			font-family: geomanist-bold;
+			text-align: right;
+			color: @cl-darkerblue;
+			margin-top: 10px;
+
+			span.total-dollars {
+				width: 200px;
+				display: inline-block;
+				font-size: 200%;
+				background-color: @cl-blue;
+				border-radius: 6px;
+				padding: 3px;
+			}
+		}
+
+		.left, .right {
+			display: inline-block;
+			vertical-align: bottom;
+		}
+
+		button.submit-order {
+			height: 90px;
+		}
+	}
+
+	.time-left {
+		margin-top: 20px;
+		font-family: geomanist-bold;
+		border: 2px solid @cl-darkerblue;
+		border-radius: 6px;
+		display: inline-block;
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+		padding-top: 10px;
+		padding-bottom: 10px;
+
+		button.std-btn {
+			margin-top: 10px;
+		}
+	}
 }
 
 .orders {

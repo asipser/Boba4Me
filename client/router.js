@@ -162,7 +162,7 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
         endTime: endTime, // end date time!,
         place: where, // where people choose to eat,
         maxOrders:maxOrders,
-        delivery:0, // needs to be an integer
+        delivery:0, // 
         tip:0, // 
         secretWord:secretWord,
         completed:false,

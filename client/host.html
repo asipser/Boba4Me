@@ -4,6 +4,7 @@
   <div class="host">
     <h1> Orders </h1> 
     <p class="subtitle">boba4.me/{{number}}</p>
+    <div class="container-for-sizing">
     <div class="orders">
       <table>
         <thead>
@@ -20,14 +21,21 @@
       </table>
     </div>
     <form class="host-modify-room"> <!-- maybe should have add to increment maximum # of orders button incase they want to accept more ppl? !-->
-      <input type="text" name="tip" placeholder="Tip?" />
-      <input type="text" name="delivery" placeholder="Delivery?" /> 
-      <button class = "submit-order" type = "submit"> Submit.</button>
+      <div class="left"><label>Tip (%): <input type="text" name="tip" placeholder="Tip?" /></label>
+      <label>Delivery ($): <input type="text" name="delivery" placeholder="Delivery?" /></label>
+      </div>
+      <div class="right">
+        <button class = "submit-order std-btn" type = "submit">Update</button>
+      </div>
+      <h3 class="total-amount">Grand Total: <span class="total-dollars">$100.73</span></h3>
     </form> 
-    <br>
-    <button class = "end-order" type = "button"> Close order.</button>
-    <button class = "extend-order" type = "button"> Extend order.</button>
+    <div class="time-left">
+    Time left: 00:14:10<br>
+    <button class = "end-order std-btn" type = "button"> Close Order</button>
+    <button class = "extend-order std-btn" type = "button"> Extend Order</button>
     <!--     could we visually represent open and closed open with like open / closed sign? -->
+    </div>
+    </div>
   </div>
 </template>
 
