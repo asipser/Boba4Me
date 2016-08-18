@@ -84,7 +84,7 @@ Router.route('/host/:_id',{
             orders[i]['price'] = +((price * 1.065) + (price * (order.tip||0)) + ((order.delivery||0)/orders.length)).toFixed(2);
           }
           return {number:room_id,
-          orders: orders} 
+          orders: orders, tip:order.tip,delivery:order.delivery} 
         }
     });
   }
