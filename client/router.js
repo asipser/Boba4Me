@@ -84,7 +84,7 @@ Router.route('/host/:_id',{
             orders[i]['price'] = +((price * 1.065) + (price * (order.tip||0)) + ((order.delivery||0)/orders.length)).toFixed(2);
           }
           return {number:room_id,
-          orders: orders} 
+          orders: orders, tip:order.tip,delivery:order.delivery} 
         }
     });
   }
@@ -162,8 +162,8 @@ Template.newHost.events({ // need to stop enter from submitting form probably?
         endTime: endTime, // end date time!,
         place: where, // where people choose to eat,
         maxOrders:maxOrders,
-        delivery:0, // 
-        tip:0, // 
+        delivery:4, // needs to be an integer
+        tip:.1, // 
         secretWord:secretWord,
         completed:false,
         completedTime:undefined
@@ -229,14 +229,20 @@ Template.order_entry.helpers({
     else
       return "default";
   },
-
-
+  ended:function(){
+    return Template.parentData().ended;
+  },
   updatedPrice(price){
-    var parentData= Template.parentData()
+    var parentData= Template.parentData();
+    console.log(parentData);
     var tip = parentData.tip;
     var delivery = parentData.delivery;
     var length = parentData.num_orders;
-
+    // for(var i=0;i<orders.length;i++){
+    //   var price = orders[i]['price'];
+    //   // What is correct tax amount? I think food is 6.5, but sales is 6.25%...
+    //   orders[i]['price'] = +((price * 1.065) + (price * (order.tip||0)) + ((order.delivery||0)/orders.length)).toFixed(2);
+    // }
     return +((price * 1.065) + (price * (tip||0)) + ((delivery||0)/length)).toFixed(2)
   },
 
@@ -320,8 +326,8 @@ Template.host.events({
   'submit .host-modify-room'(event){
     event.preventDefault();
     const target = event.target;
-    const delivery = parseFloat(target.delivery.value);
-    const tip = parseFloat(target.tip.value)/100; // expected entry is a percent
+    const delivery = (parseFloat(target.delivery.value) || 4.0);
+    const tip = (parseFloat(target.tip.value)/100 || .1); // expected entry is a percent
 
     var room_id = (Orders.find({"room":Session.get("roomId")}).fetch()[0]._id);
     Orders.update({"_id":room_id},{$set:{"delivery":delivery,"tip":tip}});
@@ -660,9 +666,9 @@ Router.route('postUserOrder/:_id',{
                   ended:Session.get("t").total <=0,
                   total:Session.get("t").total,
                   orders:user_orders,
-                  num_orders:orders.length,
-                  tip:orders.tip,
-                  delivery:orders.delivery
+                  num_orders:Math.max(orders.length,4),
+                  tip:order.tip,
+                  delivery:order.delivery
                 }
         }
     });
