@@ -1,20 +1,28 @@
 <template name="postUserOrder">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <div class="container-center">
   <div class="postUserOrder">
   <div class="foreground">
   {{#if ended}}
-  	<h1>YOU ARE DONEZO</h1>
+    <div class="time">
+  	  <h1>Time's Up</h1>
+    </div>
   {{else}}
-  	<h1>YOU ARE NOT DONEZO: YOU HAVE {{hours}} hours and {{minutes}} minutes and {{seconds}} seconds left!</h1>
-    <button type="button" id = "add-order"> Add Another Order </button>
+    <div class="time">
+      <h3> Orders close in </h3>
+  	  <h1>{{hours}}:{{minutes}}:{{seconds}}</h1>
+      <button type="button" id = "add-order"><i class="icon ion-plus-round"></i> Add Order </button>
+    </div>
 
   <div class="orders">
   <table>
     <thead>
       <tr>
+        <th></th>
         <th>Name</th>
         <th>Order</th>
-        <th>Price (w. tax/tip/delivery)</th>
+        <th>Price<br>(+fees)</th>
         <th></th>
       </tr>
     </thead>
@@ -32,12 +40,12 @@
 
 <template name="user_order_entry">
  <tr class = "order-container">
+  <td><button class = "edit" type = "button"><i class="icon ion-edit"></i></button></td>
   <td><span class="name">{{name}}</span></td>
   <td><span class="drink">{{drink}} (<span class="size">{{sizeAbbreviation size}}</span>)</span><span class="sugar">{{sugar}}</span><span class="ice">{{ice}}</span><br>
     <span class="toppings">+{{toppingsText toppings}}</span>
   </td>
-  <td>${{price}} (${{updatedPrice price}})</td>
-     <td><button class = "cancel" type = "button"><i class="icon ion-trash-a"></i></button></td>
-  <td><button class = "edit" type = "button">Modify Order</button></td>
+  <td>${{price}}<br>(${{updatedPrice price}})</td>
+    <td><button class = "cancel" type = "button"><i class="icon ion-trash-a"></i></button></td>
   </tr>
 </template>

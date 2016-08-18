@@ -1,13 +1,59 @@
 .postUserOrder {
-	background-color: @cl-lighterblue;
-	width: 100vw;
-	height: 100vh;
-	margin-top: -@container-padding;
 	.foreground {
 		position: relative;
 		z-index: 2;
+
+		.time {
+			font-family: geomanist-bold;
+			font-size: larger;
+			background-color: @cl-tapioca;
+			color: white;
+			border-radius: 50%;
+			padding: 80px;
+			display: inline-block;
+			margin-left: auto;
+			margin-right: auto;
+
+			h3 {
+				margin: 0;
+				opacity: 0.5;
+			}
+
+			button {
+				background-color: @cl-darkerblue;
+				color: white;
+				font-family: geomanist-bold;
+				border: 0;
+				border-radius: 6px;
+				padding: 10px;
+				margin-top: 10px;
+			}
+
+			button:hover {
+				background-color: @cl-blue;
+				cursor: pointer;
+			}
+		}
 	}
 	h1 {
 		margin: 0;
+	}
+
+	/* This overrides the defaults for this class, in host.import.less*/
+	.orders {
+		margin-top: 50px;
+
+		table, tr, td {
+			background-color: transparent;
+			color: lighten(@cl-tapioca, 25%);
+		}
+
+		thead th {
+			border-bottom: 3px solid @cl-blue;
+		}
+
+		span.sugar, span.toppings, span.ice {
+			color: lighten(@cl-tapioca, 25%);
+		}
 	}
 }
