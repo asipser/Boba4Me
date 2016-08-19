@@ -5,6 +5,7 @@
     "start": "meteor run"
   },
   "dependencies": {
+    "intl": "^1.2.4",
     "jquery": "^3.1.0",
     "meteor-node-stubs": "~0.2.0",
     "toastr": "^2.1.2"

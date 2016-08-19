@@ -8,6 +8,9 @@ import toastr from 'toastr';
 
 const _STORES = STORES;
 const _STORE_NAMES = STORE_NAMES;
+import IntlPolyfill from 'intl';
+Intl.NumberFormat   = IntlPolyfill.NumberFormat;
+Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
 var timeinterval;
 // use as MONEY_FORMATTER.format(100)
 const MONEY_FORMATTER = new Intl.NumberFormat('en-US', {
@@ -64,6 +67,8 @@ Router.route('/host/:_id',{
     room_id = parseInt(room_id);
     Session.set("roomId",room_id);
     order = Orders.find({"room":room_id}).fetch()[0];
+    if(Session.get("t") === undefined)
+      Session.set("t",getTimeRemaining(order.endTime));
     if(order.secretWord != "" && Session.get("secretWord") != order.secretWord){
       var word = prompt("Please enter in the secret word:");
       if(word != order.secretWord){
@@ -78,17 +83,28 @@ Router.route('/host/:_id',{
           var order = Orders.find({"room":room_id}).fetch()[0];
           var orders = order.orders;
           console.log(order);
+          var total = 0;
           for(var i=0;i<orders.length;i++){
             var price = orders[i]['price'];
             // What is correct tax amount? I think food is 6.5, but sales is 6.25%...
-            orders[i]['price'] = +((price * 1.065) + (price * (order.tip||0)) + ((order.delivery||0)/orders.length)).toFixed(2);
+            var amount_owed = +((price * 1.065) + (price * (order.tip||0)) + ((order.delivery||0)/orders.length)).toFixed(2);
+            orders[i]['price'] = amount_owed;
+            total += amount_owed;
           }
-          return {number:room_id,
-          orders: orders, tip:order.tip,delivery:order.delivery} 
+          return    { number:room_id,
+                      orders: orders,
+                      tip:order.tip*100,
+                      delivery:order.delivery.toFixed(2),
+                      hours: Session.get("t").hours,
+                      minutes: Session.get("t").minutes,
+                      seconds: Session.get("t").seconds,
+                      grand_total: (total == 0 ? "No Orders!" : "$" + total),
+                    } 
         }
     });
   }
 });
+
 
 Router.route('/:_id',{
   loadingTemplate: 'loading',
@@ -628,7 +644,19 @@ Template.postUserOrder.onCreated(function(){
     console.log("roomId: " + Session.get("roomId"));
     if(!timeinterval){
       timeinterval = setInterval(function () {
-        var order_endtime = Orders.find({"room":parseInt(target_id)}).fetch()[0].endTime;
+        var order_endtime = Orders.find({"room":Session.get("roomId")}).fetch()[0].endTime;
+        var t = getTimeRemaining(order_endtime);
+        Session.set("t", t);
+      }, 1000);
+    }
+    else
+      console.log("Countdown already in progress");
+});
+Template.host.onCreated(function(){
+    console.log("roomId: " + Session.get("roomId"));
+    if(!timeinterval){
+      timeinterval = setInterval(function () {
+        var order_endtime = Orders.find({"room":Session.get("roomId")}).fetch()[0].endTime;
         var t = getTimeRemaining(order_endtime);
         Session.set("t", t);
       }, 1000);
@@ -732,9 +760,9 @@ Router.route('postUserOrder/:_id',{
 function getTimeRemaining(endtime){
   var curr_date = new Date();
   var t = endtime.getTime() - curr_date.getTime();
-  var seconds = ("0" + Math.floor( (t/1000) % 60 )).slice(-2);
-  var minutes = ("0" + Math.floor( (t/1000/60) % 60 )).slice(-2);
-  var hours = ("0" + Math.floor( (t/(1000*60*60)) % 24 )).slice(-2);
+  var seconds = t < 0 ? "00" : ("0" + Math.floor( (t/1000) % 60 )).slice(-2);
+  var minutes = t < 0 ? "00" : ("0" + Math.floor( (t/1000/60) % 60 )).slice(-2);
+  var hours = t < 0 ? "00" : ("0" + Math.floor( (t/(1000*60*60)) % 24 )).slice(-2);
   var days = Math.floor( t/(1000*60*60*24) );
   if(t <= 0){
     //clearInterval(timeinterval);
