@@ -1,6 +1,29 @@
 .order.container-center {
 	z-index: 2;
 	color: @cl-white;
+	.milk-tea-warning {
+		background-color: fade(@cl-blue, 30%);
+		border-radius: 6px;
+		max-width: 260px;
+		margin-left: auto;
+		margin-right: auto;
+
+		p.help-text {
+			size: small;
+			padding: 5px;
+		}
+
+		.warn-dismiss {
+			margin-top: 0;
+			margin-bottom: 5px;
+		}
+	}
+
+	.div-fade-true {
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
 	input[type="radio"], input[type="checkbox"] {
 		display: none;
 		&:checked + .fake-btn {

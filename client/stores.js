@@ -25,6 +25,89 @@ export const STORES = {
 		],
 		"menu" : [
 			{
+				"name" : "Kung Fu Milk Tea",
+				"items" : [
+					{
+						"name" : "KF Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 3.75},
+							{"name" : "Large", "price" : 4.50},
+							{"name" : "Hot", "price" : 4.50}
+						]
+					},
+					{
+						"name" : "KF Milk Green Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 3.75},
+							{"name" : "Large", "price" : 4.50},
+							{"name" : "Hot", "price" : 4.50}
+						]
+					},
+					{
+						"name" : "KF Oolong Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 3.75},
+							{"name" : "Large", "price" : 4.50},
+							{"name" : "Hot", "price" : 4.50}
+						]
+					},
+					{
+						"name" : "Taro Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75},
+							{"name" : "Hot", "price" : 4.75}
+						]
+					},
+					{
+						"name" : "Taro Milk Green Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75},
+							{"name" : "Hot", "price" : 4.75}
+						]
+					},
+					{
+						"name" : "Coconut Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75},
+							{"name" : "Hot", "price" : 4.75}
+						]
+					},
+					{
+						"name" : "Coffee Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75},
+							{"name" : "Hot", "price" : 4.75}
+						]
+					},
+					{
+						"name" : "Oreo Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75}
+						]
+					},
+					{
+						"name" : "Almond Milk Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75}
+						]
+					},
+					{
+						"name" : "Winter Melon Milk Green Tea",
+						"sizes" : [
+							{"name" : "Medium", "price" : 4.00},
+							{"name" : "Large", "price" : 4.75}
+						]
+					}
+					
+			  ] 
+			},
+			{
 				"name" : "Kung Fu Classic",
 				"items": [
 					{
@@ -198,89 +281,6 @@ export const STORES = {
 						]
 					}
 				]
-			},
-			{
-				"name" : "Kung Fu Milk Tea",
-				"items" : [
-					{
-						"name" : "KF Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 3.75},
-							{"name" : "Large", "price" : 4.50},
-							{"name" : "Hot", "price" : 4.50}
-						]
-					},
-					{
-						"name" : "KF Milk Green Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 3.75},
-							{"name" : "Large", "price" : 4.50},
-							{"name" : "Hot", "price" : 4.50}
-						]
-					},
-					{
-						"name" : "KF Oolong Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 3.75},
-							{"name" : "Large", "price" : 4.50},
-							{"name" : "Hot", "price" : 4.50}
-						]
-					},
-					{
-						"name" : "Taro Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75},
-							{"name" : "Hot", "price" : 4.75}
-						]
-					},
-					{
-						"name" : "Taro Milk Green Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75},
-							{"name" : "Hot", "price" : 4.75}
-						]
-					},
-					{
-						"name" : "Coconut Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75},
-							{"name" : "Hot", "price" : 4.75}
-						]
-					},
-					{
-						"name" : "Coffee Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75},
-							{"name" : "Hot", "price" : 4.75}
-						]
-					},
-					{
-						"name" : "Oreo Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75}
-						]
-					},
-					{
-						"name" : "Almond Milk Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75}
-						]
-					},
-					{
-						"name" : "Winter Melon Milk Green Tea",
-						"sizes" : [
-							{"name" : "Medium", "price" : 4.00},
-							{"name" : "Large", "price" : 4.75}
-						]
-					}
-					
-			  ] 
 			},
 			{"name" : "Kung Fu Slush",
 				"items" : [
