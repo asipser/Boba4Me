@@ -19,7 +19,14 @@
 	  	  		</optgroup>
 	  	  	{{/each}}
 	  	  </select>
-	  	  <div >
+	  	  {{#if milkTeaWarning}}
+	  	  <div class="milk-tea-warning">
+	  	  	<p class="help-text"> Hey, it looks like you selected a regular tea instead of a milk tea! If this was intentional, press the button to continue. </p>
+	  	  	<button name="warn-dismiss" class="warn-dismiss std-btn" type="button">continue</button>
+	  	  </div>
+	  	  {{/if}}
+	  	  <div class="div-fade-{{milkTeaWarning}}">
+	  	  <div>	  	  
 	  	    <h3>Size</h3>
 	  	  	{{#each size in sizes}}
 	  	  		<input id={{parseToID size.name}} type="radio" name="size" value={{valueNamePrice size}} required />
@@ -50,11 +57,12 @@
 	  	  <div>
 	  	  	<h3>Total: {{displayPrice price}}</h3>
 	  	  </div>
-				{{#if editing}}
+		  {{#if editing}}
 	      <button name = "modify" class = "modify-order std-btn" type = "submit">Finish Editing</button>
 	      {{else}}
 	      <button name = "add" class = "submit-order std-btn" type = "submit">Submit</button>
 	      {{/if}}
+	      </div>
 	  </form>
   </div>
   {{else}}

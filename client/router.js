@@ -371,6 +371,8 @@ Template.host.events({
 Template.order.onCreated(function(){ 
   this.selectedDrink = new ReactiveVar(_STORES[this.data.store].menu[0].items[0].name);
   this.selectedCategoryIndex = new ReactiveVar(0);
+  this.confirmMilkTea = new ReactiveVar(false);
+
   var categoryIndex =0;
   var t = {};
   var selectedSize = "Medium$3.00";
@@ -503,6 +505,12 @@ Template.order.helpers({
 
   parseToID: function(s) {
     return s.replace(/\s/g, "X");
+  },
+
+  milkTeaWarning: function() {
+    const drink = Template.instance().selectedDrink.get().toLowerCase();
+    const confirm = Template.instance().confirmMilkTea.get();
+    return (drink.indexOf("tea") >= 0 && drink.indexOf("milk") < 0) && !confirm;
   }
 })
 
@@ -586,6 +594,11 @@ Template.order.events({
       Router.go("/postUserOrder/"+Session.get("roomId"));
     }
   },
+
+  'click .warn-dismiss' (event, template) {
+    template.confirmMilkTea.set(true);
+  },
+
   'change .drink-select' (event, template) {
     template.selectedDrink.set(event.target.value);
     const store = this.store;
